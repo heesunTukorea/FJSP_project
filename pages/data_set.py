@@ -1,0 +1,148 @@
+import streamlit as st
+import pandas as pd
+import numpy as np
+from fjsp_Q import *
+import os
+
+# Display editor's content as you type
+st.set_page_config(page_title="data_set")
+
+col1, col2 = st.columns([8, 2])
+
+with col2:
+    st.image("tuk_img.png")
+
+st.title('데이터셋')
+
+with st.sidebar:
+    selecop = st.selectbox('설정 메뉴', ('job.csv', 'setup.csv', 'sim.csv', 'Q-time.csv'))
+
+
+if selecop == 'job.csv':
+    st.subheader('job.csv파일 생성 설정')
+
+    number = st.number_input('job의 갯수')
+    number = int(number)
+    value1, value2 = st.slider('job타입의 난수범위', 0, 100, (1, 10))
+    st.write('선택범위', value1, value2)
+
+    if st.button('job.csv생성'):
+        job(number, value1, value2)
+        st.write('생성완료')
+
+        # 생성한 job.csv 파일을 읽어와서 출력
+        job_df = pd.read_csv('FJSP_Job.csv', index_col=False)
+        st.subheader('job.csv 데이터')
+        st.dataframe(job_df)
+        with open('FJSP_Job.csv') as f:
+            st.download_button('Download CSV', f, file_name='FJSP_Job.csv', mime='text/csv')
+
+if selecop == 'setup.csv':
+    st.subheader('set.csv파일 생성 설정')
+
+    value3, value4 = st.slider('setup시간 난수의 범위', 0, 100, (1, 10))
+    st.write('선택범위', value3, value4)
+
+    if st.button('setup.csv생성'):
+        setup(value3, value4)
+        setup_df = pd.read_csv('FJSP_Set.csv', index_col=False)
+        st.header("setup.csv")
+        st.write(setup_df)
+        with open('FJSP_Set.csv') as f:
+            st.download_button('Download CSV', f, file_name='FJSP_Set.csv', mime='text/csv')
+
+number2=0 
+value5=0 
+value6=0
+value7=0
+value8=0
+if selecop == 'sim.csv':
+    st.subheader('sim.csv파일 생성 설정')
+
+    number2 = st.number_input('기계의 갯수')
+    number2 = int(number2)
+    value5, value6 = st.slider('processtime의 난수범위', 0, 100, (1, 10))
+    st.write('선택범위', value5, value6)
+
+    value7, value8 = st.slider('job_operation의 난수범위', 0, 100, (1, 10))
+    st.write('선택범위', value7, value8)
+
+    if st.button('sim.csv생성'):
+        sim(number2, value5, value6, value7, value8)
+        sim_df = pd.read_csv('FJSP_Sim.csv', index_col=False)
+        st.header("process_time.csv")
+        st.write(sim_df)
+        with open('FJSP_Sim.csv') as f:
+            st.download_button('Download CSV', f, file_name='FJSP_Sim.csv', mime='text/csv')
+#job_df_op = sim(number2, value5, value6, value7, value8)
+
+
+if selecop == 'Q-time.csv':
+    st.subheader('Q-time.csv 생성 설정')
+
+    # Add Q-time generation code here
+    q_range_min, q_range_max = st.slider('Q-time에 적용될 배수 범위', 0.0, 5.0, (1.5, 2.0))
+    st.write('선택범위', q_range_min, q_range_max)
+    
+    if st.button('Q-time 생성'):
+
+        Q_time(q_range_min, q_range_max)
+        q_time_df = pd.read_csv('FJSP_Q_time.csv', index_col=False)
+        st.header("Q_time.csv")
+        st.write(q_time_df)
+        with open('FJSP_Q_time.csv') as f:
+            st.download_button('Download CSV', f, file_name='FJSP_Q_time.csv', mime='text/csv')
+
+    # sim.csv 생성 이후에 Q_time.csv 생성
+            
+
+        
+    
+
+        
+    
+
+# job_df = pd.read_csv('FJSP_Job.csv', index_col=False)
+# setup_df = pd.read_csv('FJSP_Set.csv', index_col=False)
+# sim_df = pd.read_csv('FJSP_Sim.csv', index_col=False)
+# q_time_df = pd.read_csv('FJSP_Q_time.csv', index_col=False)
+
+
+# j_count=0
+# s_count=0
+# p_count=0
+# q_count=0
+
+# if os.path.exists("FJSP_Job.csv"):
+#     j_count +=1
+# if os.path.exists("FJSP_Set.csv"):
+#     s_count +=1
+# if os.path.exists("FJSP_Sim.csv"):
+#     p_count +=1 
+
+# c_sum=j_count+s_count+p_count
+
+# if c_sum==3:
+#     tab1, tab2, tab3, tab4 = st.tabs(["job.csv", "setup.csv", "process_time.csv", "q_time.csv"])
+#     with tab1:
+#         st.header("job.csv")
+#         st.write(job_df)
+#     with tab2:
+#         st.header("setup.csv")
+#         st.write(setup_df)
+#     with tab3:
+#         st.header("process_time.csv")
+#         st.write(sim_df)
+#         if st.button('Q_time.csv생성'):
+#             q_range_min,q_range_max = st.slider(
+#                     'Q-time에 적용될 배수 범위',0.0,5.0,(1.5,2.0))
+#             st.write('선택범위', q_range_min,q_range_max)
+
+#             if st.button('확인'):
+#                 Q_time(q_range_min,q_range_max,job_df_op)
+#                 st.write('생성완료')
+#                 st.header("Q_time.csv")
+#                 st.write(q_time_df)
+       
+# else:
+#     st.write("데이터 정보를 입력해 주세요")
