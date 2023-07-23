@@ -147,17 +147,21 @@ def add_unavailable_machines_to_sim(sim_file, unavailable_machine_options=None):
     
     #기계와 공정을 지정해서 오류를 가정해 0을 입력
     if unavailable_machine_options:
-            for machine, job, operation in unavailable_machine_options:
-                if operation == None:
-                    for i in job_df_op:
-                        for operation in range(1, i+1):
-                            job_key = 'j' + str(job).zfill(2) + str(operation).zfill(2)
-                            machine_name = 'M' + str(machine)
-                            sim_df.loc[job_key, machine_name] = 0
-                else:
-                    job_key = 'j' + str(job).zfill(2) + str(operation).zfill(2)
+        valid_options = []
+        for machine, job, operation in unavailable_machine_options:
+            if job in range(1, len(job_df_op) + 1):  # 유효한 작업 번호만 추가
+                valid_options.append([machine, job, operation])
+
+        for machine, job, operation in valid_options:
+            if operation is None:
+                for operation1 in range(1, job_df_op[job - 1] + 1):
+                    job_key = 'j' + str(job).zfill(2) + str(operation1).zfill(2)
                     machine_name = 'M' + str(machine)
-                    sim_df.loc[job_key, machine_name] = 0  # 해당 작업의 해당 공정에 해당하는 기계 값을 0으로 변경
+                    sim_df.loc[job_key, machine_name] = 0
+            else:
+                job_key = 'j' + str(job).zfill(2) + str(operation).zfill(2)
+                machine_name = 'M' + str(machine)
+                sim_df.loc[job_key, machine_name] = 0  # 해당 작업의 해당 공정에 해당하는 기계 값을 0으로 변경
 
     sim_df.to_csv('error_processing.csv', index=True, header=True)
 
