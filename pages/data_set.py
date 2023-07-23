@@ -15,7 +15,7 @@ with col2:
 st.title('데이터셋')
 
 with st.sidebar:
-    selecop = st.selectbox('설정 메뉴', ('job.csv', 'setup.csv', 'sim.csv', 'Q-time.csv'))
+    selecop = st.selectbox('설정 메뉴', ('job.csv', 'setup.csv', 'sim.csv', 'Q-time.csv','error_create.csv'))
 
 
 if selecop == 'job.csv':
@@ -80,7 +80,7 @@ if selecop == 'sim.csv':
 if selecop == 'Q-time.csv':
     st.subheader('Q-time.csv 생성 설정')
 
-    # Add Q-time generation code here
+    # Q_time 생성 입력값 
     q_range_min, q_range_max = st.slider('Q-time에 적용될 배수 범위', 0.0, 5.0, (1.5, 2.0))
     st.write('선택범위', q_range_min, q_range_max)
     
@@ -94,10 +94,77 @@ if selecop == 'Q-time.csv':
             st.download_button('Download CSV', f, file_name='FJSP_Q_time.csv', mime='text/csv')
 
     # sim.csv 생성 이후에 Q_time.csv 생성
-            
 
-        
+#error값 범위 지정을 위한 코드
+sim_df = pd.read_csv('FJSP_Sim.csv', index_col=0)
+
+job_pro = sim_df
+job_pro_index = job_pro.index
+counts = []
+current_count = 1
+
+for r in range(1, len(job_pro_index)):
+    if job_pro_index[r][:3] == job_pro_index[r-1][:3]:
+        current_count += 1
+    else:
+        counts.append(current_count)
+        current_count = 1
+
+counts.append(current_count)
+job_df_op = counts
+job_df_op_count = int(len(job_df_op))
+
+unavailable_machine_options = []
+machine_list = job_pro.columns
+machine_num_list = machine_list.str.replace("M","")
+machine_max = int(max(machine_num_list))
+
+
+
+
+if selecop == 'error_create.csv':
+    st.subheader('error설정')   
+    num_inputs = st.number_input('기계와 작업을 입력할 갯수', min_value=1, max_value=100, value=1, step=1)
+    unavailable_machine_options = []
     
+    for idx in range(num_inputs):
+        col_m, col_j, col_o= st.columns([3, 3, 3])
+        with col_m:
+            machine_number = st.number_input('기계 지정', key=f'machine_{idx}', min_value=1,max_value= machine_max, step=1)
+            machine_number = int(machine_number)
+            st.write("지정된 기계: "+str(machine_number))
+        with col_j:
+            job_number = st.number_input('작업 지정', key=f'job_{idx}', min_value=1,max_value= job_df_op_count, step=1)
+            job_number = int(job_number)
+            st.write("지정된 작업: "+str(job_number))
+        with col_o:
+            use_op_checkbox = st.checkbox('공정 지정', key=f'op_checkbox_{idx}')  
+            if use_op_checkbox:
+                op_number = st.number_input('공정 지정',key=f'op_{idx}', min_value=1, step=1)
+                op_number = int(op_number)
+                st.write("지정된 공정: "+str(op_number))
+            else:
+                op_number = None
+        
+        unavailable_machine_options.append([machine_number, job_number, op_number])
+    
+ 
+    unavailable_machine_options_pd = pd.DataFrame(unavailable_machine_options, columns=['기계', '작업', '공정'])
+    
+    selecop_er = st.selectbox('', ('', '문제 리스트', 'error_processing_time.csv'))
+    
+    if selecop_er == '문제 리스트':
+        st.write(unavailable_machine_options_pd)
+    if selecop_er == 'error_processing_time.csv':
+        add_unavailable_machines_to_sim("FJSP_Sim.csv", unavailable_machine_options)
+        error_processing_df = pd.read_csv('error_processing.csv', index_col=False)
+        
+        st.header("error_processing_time.csv")
+        st.write(error_processing_df)
+        st.write(error_processing_df.shape)
+        with open('error_processing.csv') as f:
+            st.download_button('Download CSV', f, file_name='error_prcessing.csv', mime='text/csv')
+
 
         
     

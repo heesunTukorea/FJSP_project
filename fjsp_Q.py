@@ -13,7 +13,7 @@ def job(count,jmin,jmax):
         job_number = i
         job_type = rd.randrange(jmin,jmax+1)#난수 범위
         F_job.append([job_number,job_type])
-    columns = ['','job_type']
+    columns = ['','number']
     pd_F_job = pd.DataFrame(F_job, columns = columns)
     pd_F_job.index = np.arange(1, len(pd_F_job) + 1)
     pd_F_job.to_csv('FJSP_Job.csv', index = False)
@@ -70,8 +70,10 @@ def sim(machine_count,pmin,pmax,opmin,opmax):
     
     pd_sim.to_csv('FJSP_Sim.csv', index=True, header=True)
 
+#Q_time 을 생성하는 코드
 @st.cache_data
 def Q_time(qmin,qmax):
+    #기존 csv파일을 불러와 데이터를 사용
     job_df = pd.read_csv('FJSP_Job.csv', index_col=0)
     job_pro = pd.read_csv('FJSP_Sim.csv', index_col=0)
     
@@ -79,6 +81,7 @@ def Q_time(qmin,qmax):
     counts = []
     current_count = 1
 
+    #프로세싱 타이임의 인덱스를 추출해서 작업과 공저의 갯수 추출
     for i in range(1, len(job_pro_index)):
         if job_pro_index[i][:3] == job_pro_index[i-1][:3]:
             current_count += 1
@@ -89,7 +92,7 @@ def Q_time(qmin,qmax):
     counts.append(current_count)
     job_df_op = counts
     
-    
+    #
     job_df_op_max = max(job_df_op)
     job_df_op_max_1 = list(range(1,job_df_op_max+1))
     job_df_op_values = job_df_op
@@ -99,7 +102,8 @@ def Q_time(qmin,qmax):
     j_op1 = 'j'+ j_op 
     j_op_num = j_op1.nunique()
 
-
+    #Q_time을 기계들의 processing time의 최댓값에서 범위를 지정해서 곱함
+    #공정이 없는것은 0으로 처리
     columns = job_df_op_max_1
     index = j_op1
     q_time = pd.DataFrame(index=range(j_op_num), columns=job_df_op_max_1)  # 빈 데이터프레임 생성
@@ -117,3 +121,42 @@ def Q_time(qmin,qmax):
     q_time.index = 'j'+ q_time.index
 
     q_time.to_csv('FJSP_Q_time.csv', index=True, header=True)
+
+
+#기계와 공정의 오류를 생성하는 코드
+@st.cache_data
+def add_unavailable_machines_to_sim(sim_file, unavailable_machine_options=None):
+    sim_df = pd.read_csv(sim_file, index_col=0)
+
+    job_pro = sim_df
+    job_pro_index = job_pro.index
+    counts = []
+    current_count = 1
+
+    #프로세싱 타임에서 작업과 공정의 수를 추출
+    for i in range(1, len(job_pro_index)):
+        if job_pro_index[i][:3] == job_pro_index[i-1][:3]:
+            current_count += 1
+        else:
+            counts.append(current_count)
+            current_count = 1
+
+    counts.append(current_count)
+    job_df_op = counts
+    
+    #기계와 공정을 지정해서 오류를 가정해 0을 입력
+    if unavailable_machine_options:
+            for machine, job, operation in unavailable_machine_options:
+                if operation == None:
+                    for i in job_df_op:
+                        for operation in range(1, i+1):
+                            job_key = 'j' + str(job).zfill(2) + str(operation).zfill(2)
+                            machine_name = 'M' + str(machine)
+                            sim_df.loc[job_key, machine_name] = 0
+                else:
+                    job_key = 'j' + str(job).zfill(2) + str(operation).zfill(2)
+                    machine_name = 'M' + str(machine)
+                    sim_df.loc[job_key, machine_name] = 0  # 해당 작업의 해당 공정에 해당하는 기계 값을 0으로 변경
+
+    sim_df.to_csv('error_processing.csv', index=True, header=True)
+
