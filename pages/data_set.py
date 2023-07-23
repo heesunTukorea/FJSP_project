@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from fjsp_Q import *
 import os
+import matplotlib.pyplot as plt
 
 # Display editor's content as you type
 st.set_page_config(page_title="data_set")
@@ -163,8 +164,10 @@ if selecop == 'error_create.csv':
         error_processing_df = pd.read_csv('error_processing.csv', index_col=False)
         
         st.header("error_processing_time.csv")
-        st.write(error_processing_df)
+        error_processing_styled_df = error_processing_df.style.applymap(highlight_zero)
+        st.write(error_processing_styled_df)
         st.write(error_processing_df.shape)
+        
         with open('error_processing.csv') as f:
             st.download_button('Download CSV', f, file_name='error_prcessing.csv', mime='text/csv')
 
