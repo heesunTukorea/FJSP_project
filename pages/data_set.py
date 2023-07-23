@@ -128,6 +128,7 @@ if selecop == 'error_create.csv':
     unavailable_machine_options = []
     
     for idx in range(num_inputs):
+        o_count=0
         col_m, col_j, col_o= st.columns([3, 3, 3])
         with col_m:
             machine_number = st.number_input('기계 지정', key=f'machine_{idx}', min_value=1,max_value= machine_max, step=1)
@@ -137,14 +138,16 @@ if selecop == 'error_create.csv':
             job_number = st.number_input('작업 지정', key=f'job_{idx}', min_value=1,max_value= job_df_op_count, step=1)
             job_number = int(job_number)
             st.write("지정된 작업: "+str(job_number))
-        with col_o:
-            use_op_checkbox = st.checkbox('공정 지정', key=f'op_checkbox_{idx}')  
-            if use_op_checkbox:
-                op_number = st.number_input('공정 지정',key=f'op_{idx}', min_value=1, step=1)
-                op_number = int(op_number)
-                st.write("지정된 공정: "+str(op_number))
-            else:
-                op_number = None
+            if os.path.exists(job_number):
+                job_df_op_select = job_df_op[job_number-1]
+                with col_o:
+                    use_op_checkbox = st.checkbox('공정 지정', key=f'op_checkbox_{idx}')  
+                    if use_op_checkbox:
+                        op_number = st.number_input('공정 지정',key=f'op_{idx}', min_value=1,max_value =job_df_op_select, step=1)
+                        op_number = int(op_number)
+                        st.write("지정된 공정: "+str(op_number))
+                    else:
+                        op_number = None
         
         unavailable_machine_options.append([machine_number, job_number, op_number])
     
