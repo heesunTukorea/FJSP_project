@@ -3,6 +3,7 @@ import random as rd
 import numpy as np
 import streamlit as st
 import matplotlib.pyplot as plt
+import os
 
 #job의 이름과 operation생성 파일
 #count에 job의 갯수 할당
@@ -168,5 +169,11 @@ def add_unavailable_machines_to_sim(sim_file, unavailable_machine_options=None):
 # 데이터프레임을 출력하여 0인 값에 색을 입힙니다.
 @st.cache_data
 def highlight_zero(val):
-    color = 'yellow' if val == 0 else 'white'
-    return f'background-color: {color}'
+    return 'background-color: yellow' if val == 0 else ''
+
+@st.cache_data
+def get_csv_file_list():
+    current_directory = os.getcwd()
+    files = os.listdir(current_directory)
+    csv_files = [f for f in files if f.endswith('.csv')]
+    return csv_files
