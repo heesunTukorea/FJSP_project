@@ -8,8 +8,10 @@ import os
 #job의 이름과 operation생성 파일
 #count에 job의 갯수 할당
 #랜덤범위 1~7
+
+save_folder = 'fjsp_csv_folder'
 @st.cache_data
-def job(count,jmin,jmax):
+def job(job_csv_name,count,jmin,jmax):
     F_job=[]
     for i in range(1,count+1):
         job_number = i
@@ -18,13 +20,13 @@ def job(count,jmin,jmax):
     columns = ['','number']
     pd_F_job = pd.DataFrame(F_job, columns = columns)
     pd_F_job.index = np.arange(1, len(pd_F_job) + 1)
-    pd_F_job.to_csv('FJSP_Job.csv', index = False)
+    pd_F_job.to_csv(f'{save_folder}\{job_csv_name}.csv', index = False)
 
 #job들의 setup타임 생성
 #랜덤범위 1~10
 @st.cache_data
-def setup(smin,smax):
-    job_df = pd.read_csv('FJSP_Job.csv', index_col=False)
+def setup(job_csv_name,set_csv_name,smin,smax):
+    job_df = pd.read_csv(f'{save_folder}\{job_csv_name}', index_col=False)
     job_df.columns = ['job_num','job_type']
     #고유값들의 수를 뽑아서 시뮬레이터 데이터 생성
     job_num = job_df['job_num'].nunique()+1
@@ -39,15 +41,15 @@ def setup(smin,smax):
     
     #인덱스와 컬럼이 같을 때 값을 0으로 변경
     np.fill_diagonal(pd_F_set.values, 0)
-    pd_F_set.to_csv('FJSP_Set.csv')
+    pd_F_set.to_csv(f'{save_folder}\{set_csv_name}.csv')
 
     #머신과 job,operation의 process시간
 #랜덤범위5~25
 @st.cache_data
-def sim(machine_count,pmin,pmax,opmin,opmax):
+def sim(job_csv_name,sim_csv_name,machine_count,pmin,pmax,opmin,opmax):
     
     machine = np.array(range(1, machine_count+1))
-    job_df = pd.read_csv('FJSP_Job.csv', index_col=False)
+    job_df = pd.read_csv(f'{save_folder}\{job_csv_name}', index_col=False)
     job_df.columns = ['job_num','job_type']
     job_num = job_df['job_num'].nunique()
     jo = []
@@ -70,14 +72,14 @@ def sim(machine_count,pmin,pmax,opmin,opmax):
     # 컬럼 이름에 'M' 접두사 추가
     pd_sim = sim_df.add_prefix('M')
     
-    pd_sim.to_csv('FJSP_Sim.csv', index=True, header=True)
+    pd_sim.to_csv(f'{save_folder}\{sim_csv_name}.csv', index=True, header=True)
 
 #Q_time 을 생성하는 코드
 @st.cache_data
-def Q_time(qmin,qmax):
+def Q_time(job_csv_name,sim_csv_name,q_csv_name,qmin,qmax):
     #기존 csv파일을 불러와 데이터를 사용
-    job_df = pd.read_csv('FJSP_Job.csv', index_col=0)
-    job_pro = pd.read_csv('FJSP_Sim.csv', index_col=0)
+    job_df = pd.read_csv(f'{save_folder}\{job_csv_name}', index_col=0)
+    job_pro = pd.read_csv(f'{save_folder}\{sim_csv_name}', index_col=0)
     
     job_pro_index = job_pro.index
     counts = []
@@ -122,13 +124,13 @@ def Q_time(qmin,qmax):
     q_time.index = q_time.index.astype(str)
     q_time.index = 'j'+ q_time.index
 
-    q_time.to_csv('FJSP_Q_time.csv', index=True, header=True)
+    q_time.to_csv(f'{save_folder}\{q_csv_name}.csv', index=True, header=True)
 
 
 #기계와 공정의 오류를 생성하는 코드
 @st.cache_data
-def add_unavailable_machines_to_sim(sim_file, unavailable_machine_options=None):
-    sim_df = pd.read_csv(sim_file, index_col=0)
+def add_unavailable_machines_to_sim(sim_file_name,error_csv_name, unavailable_machine_options=None):
+    sim_df = pd.read_csv(f'{save_folder}\{sim_file_name}', index_col=0)
 
     job_pro = sim_df
     job_pro_index = job_pro.index
@@ -164,7 +166,7 @@ def add_unavailable_machines_to_sim(sim_file, unavailable_machine_options=None):
                 machine_name = 'M' + str(machine)
                 sim_df.loc[job_key, machine_name] = 0  # 해당 작업의 해당 공정에 해당하는 기계 값을 0으로 변경
 
-    sim_df.to_csv('error_processing.csv', index=True, header=True)
+    sim_df.to_csv(f'{save_folder}\{error_csv_name}.csv', index=True, header=True)
 
 # 데이터프레임을 출력하여 0인 값에 색을 입힙니다.
 @st.cache_data
@@ -172,8 +174,43 @@ def highlight_zero(val):
     return 'background-color: yellow' if val == 0 else ''
 
 @st.cache_data
-def get_csv_file_list():
+def get_csv_file_list(save_folder):
     current_directory = os.getcwd()
-    files = os.listdir(current_directory)
+    files = os.listdir(save_folder)
     csv_files = [f for f in files if f.endswith('.csv')]
     return csv_files
+
+@st.cache_data
+def get_csv_files_with_string(save_folder,target_string):
+    files = []
+    for file in os.listdir(save_folder):
+        if file.endswith(".csv") and target_string in file:
+            files.append(file)
+    return files
+
+#error값 범위 지정을 위한 코드
+@st.cache_data
+def sim_list_remind(selected_sim_csv2):
+    sim_df = pd.read_csv(f'{save_folder}\{selected_sim_csv2}', index_col=0)
+
+    job_pro = sim_df
+    job_pro_index = job_pro.index
+    counts = []
+    current_count = 1
+
+    for r in range(1, len(job_pro_index)):
+        if job_pro_index[r][:3] == job_pro_index[r-1][:3]:
+            current_count += 1
+        else:
+            counts.append(current_count)
+            current_count = 1
+
+    counts.append(current_count)
+    job_df_op = counts
+    job_df_op_count = int(len(job_df_op))
+
+    unavailable_machine_options = []
+    machine_list = job_pro.columns
+    machine_num_list = machine_list.str.replace("M","")
+    machine_max = int(max(machine_num_list))
+    return job_df_op,machine_max,job_df_op_count
