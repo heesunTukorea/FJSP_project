@@ -48,7 +48,6 @@ if selecop == '파일 업로드':
             file_path = os.path.join(save_folder,uploaded_file.name)
             with open(file_path, "wb") as f:
                 f.write(uploaded_file.getbuffer())
-            st.experimental_rerun()
     else:
         st.write('파일을 업로드 하세요')
 
@@ -71,6 +70,7 @@ if selecop == 'job.csv':
         job_df = pd.read_csv(f'{save_folder}\{job_time_file_name}.csv', index_col=False)
         st.subheader(job_time_file_name + '.csv')
         st.dataframe(job_df)
+        
         with open(f'{save_folder}\{job_time_file_name}.csv') as f:
             st.download_button(f"Download {job_time_file_name}.csv", f, file_name=f"{job_time_file_name}.csv", mime='text/csv')
 
