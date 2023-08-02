@@ -72,7 +72,7 @@ if selecop == 'job.csv':
         st.subheader(job_time_file_name + '.csv')
         st.dataframe(job_df)
         with open(f'{save_folder}\{job_time_file_name}.csv') as f:
-            st.download_button(f"Download {job_time_file_name}.csv", f, file_name=f"{save_folder}\{job_time_file_name}.csv", mime='text/csv')
+            st.download_button(f"Download {job_time_file_name}.csv", f, file_name=f"{job_time_file_name}.csv", mime='text/csv')
 
        
 
@@ -96,7 +96,7 @@ if selecop == 'setup.csv':
         st.write(setup_df)
         
         with open(f'{save_folder}\{set_time_file_name}.csv') as f:
-            st.download_button(f"Download {set_time_file_name}.csv", f, file_name=f"{save_folder}\{set_time_file_name}.csv", mime='text/csv')
+            st.download_button(f"Download {set_time_file_name}.csv", f, file_name=f"{set_time_file_name}.csv", mime='text/csv')
 
 number2=0 
 value5=0 
@@ -127,7 +127,7 @@ if selecop == 'sim.csv':
         st.write(sim_df)
         
         with open(f'{save_folder}\{processing_time_file_name}.csv') as f:
-            st.download_button(f"Download {processing_time_file_name}.csv", f, file_name=f"{save_folder}\{processing_time_file_name}.csv", mime='text/csv')
+            st.download_button(f"Download {processing_time_file_name}.csv", f, file_name=f"{processing_time_file_name}.csv", mime='text/csv')
 #job_df_op = sim(number2, value5, value6, value7, value8)
 
 
@@ -159,7 +159,7 @@ if selecop == 'Q-time.csv':
 
         
         with open(f'{save_folder}\{Q_time_file_name}.csv') as f:
-            st.download_button(f"Download {Q_time_file_name}.csv", f, file_name=f"{save_folder}\{Q_time_file_name}.csv", mime='text/csv')
+            st.download_button(f"Download {Q_time_file_name}.csv", f, file_name=f"{Q_time_file_name}.csv", mime='text/csv')
 
     # sim.csv 생성 이후에 Q_time.csv 생성
 
@@ -228,7 +228,7 @@ if selecop == 'error_create.csv':
 
         
         with open(f'{save_folder}\{error_file_name}.csv') as f:
-            st.download_button(f"Download {error_file_name}.csv", f, file_name=f"{save_folder}\{error_file_name}.csv", mime='text/csv')
+            st.download_button(f"Download {error_file_name}.csv", f, file_name=f"{error_file_name}.csv", mime='text/csv')
         # with open('error_processing.csv') as f:
         #     st.download_button('Download CSV', f, file_name='error_prcessing.csv', mime='text/csv')
 
