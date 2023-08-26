@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from fjsp_Q import *
+from fjsp_Q_copy import *
 import os
 import matplotlib.pyplot as plt
 import time
@@ -122,16 +122,16 @@ if selecop == 'setup.csv':
 
     job_target_string = 'FJSP_Si'
     
-    # csv_files = get_csv_files_with_string(save_folder,job_target_string)
-    # selected_sim_csv = st.selectbox("CSV 파일 선택", csv_files)
-    # st.write(f"선택된 CSV 파일: {selected_sim_csv}")
+    csv_files = get_csv_files_with_string(save_folder,job_target_string)
+    selected_sim_csv = st.selectbox("CSV 파일 선택", csv_files)
+    st.write(f"선택된 CSV 파일: {selected_sim_csv}")
 
     value3, value4 = st.slider('setup시간 난수의 범위', 0, 100, (1, 10))
     st.write('선택범위', value3, value4)
 
     set_time_file_name = st.text_input("파일 이름을 입력하세요 (확장자 없이):", "FJSP_Set")
     if st.button('setup.csv생성'):
-        setup(set_time_file_name,value3, value4)
+        setup(selected_sim_csv,set_time_file_name,value3, value4)
         setup_df = pd.read_csv(f'{save_folder}\{set_time_file_name}.csv', index_col=False)
         st.header(set_time_file_name + ".csv")
         st.write(setup_df)
@@ -157,9 +157,9 @@ if selecop == 'Q-time.csv':
 
     sim_target_string = "FJSP_Si"
     
-    # csv_files1 = get_csv_files_with_string(save_folder,sim_target_string)
-    # selected_sim_csv = st.selectbox("CSV 파일 선택", csv_files1)
-    # st.write(f"선택된 CSV 파일: {selected_sim_csv}")
+    csv_files1 = get_csv_files_with_string(save_folder,sim_target_string)
+    selected_sim_csv = st.selectbox("CSV 파일 선택", csv_files1)
+    st.write(f"선택된 CSV 파일: {selected_sim_csv}")
 
     # Q_time 생성 입력값 
     q_range_min, q_range_max = st.slider('Q-time에 적용될 배수 범위', 0.0, 5.0, (1.5, 2.0),step = 0.1)
@@ -167,7 +167,7 @@ if selecop == 'Q-time.csv':
     Q_time_file_name = st.text_input("파일 이름을 입력하세요 (확장자 없이):", "FJSP_Q_time")
     if st.button('Q-time 생성'):
 
-        Q_time(Q_time_file_name,q_range_min, q_range_max)
+        Q_time(selected_sim_csv,Q_time_file_name,q_range_min, q_range_max)
         q_time_df = pd.read_csv(f'{save_folder}\{Q_time_file_name}.csv', index_col=False)
         st.header(Q_time_file_name+".csv")
         st.write(q_time_df)
@@ -193,14 +193,14 @@ if selecop == 'error_create.csv':
     ''')
     st.markdown("---")   
 
-    # sim_target_string1 = "FJSP_Si"
+    sim_target_string1 = "FJSP_Si"
     
-    # csv_files2 = get_csv_files_with_string(save_folder,sim_target_string1)
-    # selected_sim_csv2 = st.selectbox("CSV 파일 선택", csv_files2)
-    # st.write(f"선택된 CSV 파일: {selected_sim_csv2}")
+    csv_files2 = get_csv_files_with_string(save_folder,sim_target_string1)
+    selected_sim_csv2 = st.selectbox("CSV 파일 선택", csv_files2)
+    st.write(f"선택된 CSV 파일: {selected_sim_csv2}")
     
 
-    job_df_op,machine_max,job_df_op_count = sim_list_remind()
+    job_df_op,machine_max,job_df_op_count = sim_list_remind(selected_sim_csv2)
     
     num_inputs = st.number_input('기계와 작업을 입력할 갯수', min_value=1, max_value=100, value=1, step=1)
     unavailable_machine_options = []
@@ -245,7 +245,7 @@ if selecop == 'error_create.csv':
     if selecop_er == '문제 리스트':
         st.write(unavailable_machine_options_pd)
     if selecop_er == 'error_processing_time.csv':
-        add_unavailable_machines_to_sim(error_file_name, unavailable_machine_options)
+        add_unavailable_machines_to_sim(selected_sim_csv2, error_file_name, unavailable_machine_options)
         error_processing_df = pd.read_csv(f'{save_folder}\{error_file_name}.csv', index_col=False)
         
         st.header(error_file_name+".csv")
@@ -277,13 +277,13 @@ if selecop == 'rd_time.csv':
     st.subheader('초기물량 설정') 
       
 
-    # sim_target_string1 = "FJSP_Si"
+    sim_target_string1 = "FJSP_Si"
     
-    # csv_files3 = get_csv_files_with_string(save_folder,sim_target_string1)
-    # selected_sim_csv3 = st.selectbox("CSV 파일 선택", csv_files3)
-    # st.write(f"선택된 CSV 파일: {selected_sim_csv3}")
+    csv_files3 = get_csv_files_with_string(save_folder,sim_target_string1)
+    selected_sim_csv3 = st.selectbox("CSV 파일 선택", csv_files3)
+    st.write(f"선택된 CSV 파일: {selected_sim_csv3}")
 
-    job_df_op,machine_max,job_df_op_count = sim_list_remind()
+    job_df_op,machine_max,job_df_op_count = sim_list_remind(selected_sim_csv3)
     job_product_list=[]
 
     num_inputs1 = list(range(1,len(job_df_op)+1))
@@ -311,7 +311,7 @@ if selecop == 'rd_time.csv':
 
     filtered_result, sorted_counter = filtered_result_create(job_product_list)
     
-    #st.write(filtered_result)
+    st.write(filtered_result)
     #st.write(sorted_counter)
 
 
@@ -365,11 +365,10 @@ if selecop == 'rd_time.csv':
     rd_csv_name = st.text_input("파일 이름을 입력하세요 (확장자 없이):", "FJSP_rd_time")
     if st.button('rd_time 생성'):
 
-        rd_df = release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_time_list,r_min,r_max)
+        rd_df = release_due_data(selected_sim_csv3,rd_csv_name,filtered_result,first_release_supply,arrival_time_list,r_min,r_max)
         rd_time_df = pd.read_csv(f'{save_folder}\{rd_csv_name}.csv', index_col=0)
         st.header(rd_csv_name+".csv")
         st.write(rd_time_df)
-        st.write(rd_time_df.shape)
 
         
         with open(f'{save_folder}\{rd_csv_name}.csv') as f:

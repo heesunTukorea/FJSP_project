@@ -67,8 +67,8 @@ def sim(sim_csv_name,count,machine_count,pmin,pmax,opmin,opmax):
 #job들의 setup타임 생성
 #랜덤범위 1~10
 @st.cache_data
-def setup(set_csv_name,smin,smax):
-    job_pro = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+def setup(sim_csv_name,set_csv_name,smin,smax):
+    job_pro = pd.read_csv(f'{save_folder}\{sim_csv_name}', index_col=0)
     #processing time에서 데이터 추출 하는 코드
     job_pro_index = job_pro.index
     job_list=[]
@@ -102,9 +102,9 @@ def setup(set_csv_name,smin,smax):
 #Q_time 을 생성하는 코드
 
 @st.cache_data
-def Q_time(q_csv_name,qmin,qmax):
+def Q_time(sim_csv_name,q_csv_name,qmin,qmax):
     #기존 csv파일을 불러와 데이터를 사용
-    job_pro = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+    job_pro = pd.read_csv(f'{save_folder}\{sim_csv_name}', index_col=0)
     job_pro_index = job_pro.index
     counts = []
     current_count = 1
@@ -151,8 +151,8 @@ def Q_time(q_csv_name,qmin,qmax):
 
 #기계와 공정의 오류를 생성하는 코드
 @st.cache_data
-def add_unavailable_machines_to_sim(error_csv_name, unavailable_machine_options=None):
-    sim_df = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+def add_unavailable_machines_to_sim(sim_file_name,error_csv_name, unavailable_machine_options=None):
+    sim_df = pd.read_csv(f'{save_folder}\{sim_file_name}', index_col=0)
 
     job_pro = sim_df
     job_pro_index = job_pro.index
@@ -212,8 +212,8 @@ def get_csv_files_with_string(save_folder,target_string):
 
 #error값 범위 지정을 위한 코드
 @st.cache_data
-def sim_list_remind():
-    sim_df = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+def sim_list_remind(selected_sim_csv2):
+    sim_df = pd.read_csv(f'{save_folder}\{selected_sim_csv2}', index_col=0)
 
     job_pro = sim_df
     job_pro_index = job_pro.index
@@ -283,8 +283,8 @@ def filtered_result_create(job_product_list):
 
     
 @st.cache_data
-def release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_time_list,r_min,r_max):
-    pd_sim = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+def release_due_data(sim_csv_name1,rd_csv_name,filtered_result,first_release_supply,arrival_time_list,r_min,r_max):
+    pd_sim = pd.read_csv(f'{save_folder}\{sim_csv_name1}', index_col=0)
     filtered_result=filtered_result
     #r_time만드는 코드
     # 각 작업 번호별 초기 작업 가능한 물량을 저장한 딕셔너리 
