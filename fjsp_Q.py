@@ -322,8 +322,8 @@ def release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_ti
                 same_job_dict[idx] = previous_r_time
             else:
                 # 이전에 계산한 작업 번호와 관련된 정보가 없는 경우
-                if previous_r_time is None:
-                    previous_r_time = 0  # 첫 작업이라면 이전 'r_time'을 해당 작업의 도착 시간으로 설정
+                #if previous_r_time is None:
+                previous_r_time = 0  # 첫 작업이라면 이전 'r_time'을 해당 작업의 도착 시간으로 설정
 
                 # 새로운 'r_time'을 계산하되, 이전 'r_time'에 arrival_time_list[idx - 1]을 더한 값에
                 # 0.8 ~ 1.2 사이의 난수를 곱해서 구함
