@@ -7,9 +7,7 @@ import os
 from collections import Counter
 
 
-#job의 이름과 operation생성 파일
-#count에 job의 갯수 할당
-#랜덤범위 1~7
+
 
 save_folder = 'fjsp_csv_folder'
 
