@@ -16,7 +16,7 @@ save_folder = 'fjsp_csv_folder'
     #머신과 job,operation의 process시간
 #랜덤범위5~25
 
-@st.cache_data
+
 def sim(sim_csv_name,count,machine_count,pmin,pmax,opmin,opmax):
 #sim_csv_name
 #     count = 총job의 갯수    
@@ -64,7 +64,7 @@ def sim(sim_csv_name,count,machine_count,pmin,pmax,opmin,opmax):
 
 #job들의 setup타임 생성
 #랜덤범위 1~10
-@st.cache_data
+
 def setup(set_csv_name,smin,smax):
     job_pro = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
     #processing time에서 데이터 추출 하는 코드
@@ -99,7 +99,7 @@ def setup(set_csv_name,smin,smax):
 
 #Q_time 을 생성하는 코드
 
-@st.cache_data
+
 def Q_time(q_csv_name,qmin,qmax):
     #기존 csv파일을 불러와 데이터를 사용
     job_pro = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
@@ -148,7 +148,7 @@ def Q_time(q_csv_name,qmin,qmax):
 
 
 #기계와 공정의 오류를 생성하는 코드
-@st.cache_data
+
 def add_unavailable_machines_to_sim(error_csv_name, unavailable_machine_options=None):
     sim_df = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
 
@@ -189,18 +189,18 @@ def add_unavailable_machines_to_sim(error_csv_name, unavailable_machine_options=
     sim_df.to_csv(f'{save_folder}\{error_csv_name}.csv', index=True, header=True)
 
 # 데이터프레임을 출력하여 0인 값에 색을 입힙니다.
-@st.cache_data
+
 def highlight_zero(val):
     return 'background-color: yellow' if val == 0 else ''
 
-@st.cache_data
+
 def get_csv_file_list(save_folder):
     current_directory = os.getcwd()
     files = os.listdir(save_folder)
     csv_files = [f for f in files if f.endswith('.csv')]
     return csv_files
 
-@st.cache_data
+
 def get_csv_files_with_string(save_folder,target_string):
     files = []
     for file in os.listdir(save_folder):
@@ -209,7 +209,7 @@ def get_csv_files_with_string(save_folder,target_string):
     return files
 
 #error값 범위 지정을 위한 코드
-@st.cache_data
+
 def sim_list_remind():
     sim_df = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
 
@@ -264,7 +264,7 @@ def sim_list_remind():
 #     pd_F_job.index = np.arange(1, len(pd_F_job) + 1)
 
 
-@st.cache_data
+
 def filtered_result_create(job_product_list):
     
     random_array_df = pd.DataFrame({'op_count': job_product_list})
@@ -280,7 +280,7 @@ def filtered_result_create(job_product_list):
     return filtered_result,sorted_counter
 
     
-@st.cache_data
+
 def release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_time_list,r_min,r_max):
     pd_sim = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
     filtered_result=filtered_result
