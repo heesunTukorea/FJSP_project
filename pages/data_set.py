@@ -74,7 +74,7 @@ if selecop == 'sim.csv':
     x1 = st.expander('사용법')
     x1.write('''
     - Processing_time 을 생성하는 페이지
-                       
+    - 모든 작업은 이 작업을 수행 후 진행되어야 함              
     1. 작업의 갯수를 설정(job_type)
     2. 기계의 갯수를 설정
     3. 생성될 processing time의 난수 범위 설정
@@ -96,10 +96,11 @@ if selecop == 'sim.csv':
 
     value7, value8 = st.slider('job_operation의 난수범위', 0, 100, (1, 10))
     st.write('선택범위', value7, value8)
+    
     processing_time_file_name = st.text_input("파일 이름을 입력하세요 (확장자 없이):", "FJSP_Sim")
     if st.button('sim.csv생성'):
         sim(processing_time_file_name,number,number2, value5, value6, value7, value8)
-        sim_df = pd.read_csv(f'{save_folder}\{processing_time_file_name}.csv', index_col=False)
+        sim_df = pd.read_csv(f'{save_folder}\FJSP_Sim.csv', index_col=False)
         st.header(processing_time_file_name + ".csv")
         st.write(sim_df)
         
@@ -114,6 +115,7 @@ if selecop == 'setup.csv':
     x1.write('''
     - Setup_time을 생성하는 페이지
     - 불러오는 파일에 맞게 작업이 설정됨
+    - sim.csv생성이 선행 되어야 함
                        
     1. Setup_time의 난수 범위 설정 가능
     2. 원하는 csv이름을 지정후 생성 및 다운
@@ -148,6 +150,7 @@ if selecop == 'Q-time.csv':
     x1.write('''
     - Queue_tiem을 생성하는 페이지
     - 불러오는 파일에 맞게 기본값이 설정됨
+    - sim.csv생성이 선행 되어야 함
                        
     1. 적용 배수 설정(processing_time의 최댓값 X 적용배수 )
     2. 원하는 csv이름을 지정후 생성 및 다운
@@ -184,6 +187,7 @@ if selecop == 'error_create.csv':
     x1.write('''
     - processing_time데이터에서 Error(=0)을 생성하는 페이지
     - 불러오는 파일에 맞게 기본값이 설정됨
+    - sim.csv생성이 선행 되어야 함
                       
     1. 생성할 에러의 갯수를 설정
     2. 기계와 작업을 지정시 해당 기계의 해당 작업이 값이 모두 0으로 변경됨
@@ -265,6 +269,7 @@ if selecop == 'rd_time.csv':
     x.write('''
     - release_time과 due_time을 생성하는 페이지
     - 설정은 불러오는 파일에 맞게 작업의 갯수가 설정됨
+    - sim.csv생성이 선행 되어야 함
                        
     1. 각 작업당 총 생산량을 설정
     2. 각 작업의 바로 시작 가능한 물량을 설정

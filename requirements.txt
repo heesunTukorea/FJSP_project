@@ -1,12 +1,28 @@
 
+
+
+gast==0.4.0
+
 gym==0.26.2
 gym-notices==0.0.8
 
 
 
+
 matplotlib==3.6.2
 matplotlib-inline==0.1.6
+mistune==2.0.4
 
+numpy==1.24.1
 
+pandas==1.5.2
 
+plotly==5.15.0
+plotly-express==0.4.1
+ply==3.11
+
+torch==2.0.1
+torchvision==0.15.2
+tornado==6.2
+tqdm==4.64.1
 

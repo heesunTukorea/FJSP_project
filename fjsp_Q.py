@@ -61,7 +61,7 @@ def sim(sim_csv_name,count,machine_count,pmin,pmax,opmin,opmax):
     
     # 컬럼 이름에 'M' 접두사 추가
     pd_sim = sim_df.add_prefix('M')
-    pd_sim.to_csv(f'{save_folder}\{sim_csv_name}.csv', index=True, header=True)
+    pd_sim.to_csv(f'{save_folder}\FJSP_Sim.csv', index=True, header=True)
 
 
 #job들의 setup타임 생성
