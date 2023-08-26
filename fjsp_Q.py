@@ -61,14 +61,14 @@ def sim(sim_csv_name,count,machine_count,pmin,pmax,opmin,opmax):
     
     # 컬럼 이름에 'M' 접두사 추가
     pd_sim = sim_df.add_prefix('M')
-    pd_sim.to_csv(f'{save_folder}\{sim_csv_name}.csv', index=True, header=True)
+    pd_sim.to_csv(f'{sim_csv_name}.csv', index=True, header=True)
 
 
 #job들의 setup타임 생성
 #랜덤범위 1~10
 @st.cache_data
 def setup(set_csv_name,smin,smax):
-    job_pro = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+    job_pro = pd.read_csv('FJSP_Sim.csv', index_col=0)
     #processing time에서 데이터 추출 하는 코드
     job_pro_index = job_pro.index
     job_list=[]
@@ -96,7 +96,7 @@ def setup(set_csv_name,smin,smax):
     # NumPy 배열을 데이터프레임으로 변환하여 마지막 행에 추가
     pd_F_set = pd_F_set.append(pd.DataFrame(new_row, columns=pd_F_set.columns,index=index))
     pd_F_set = pd_F_set.astype(int)
-    pd_F_set.to_csv(f'{save_folder}\{set_csv_name}.csv')
+    pd_F_set.to_csv(f'{set_csv_name}.csv')
 
 
 #Q_time 을 생성하는 코드
@@ -104,7 +104,7 @@ def setup(set_csv_name,smin,smax):
 @st.cache_data
 def Q_time(q_csv_name,qmin,qmax):
     #기존 csv파일을 불러와 데이터를 사용
-    job_pro = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+    job_pro = pd.read_csv('FJSP_Sim.csv', index_col=0)
     job_pro_index = job_pro.index
     counts = []
     current_count = 1
@@ -144,7 +144,7 @@ def Q_time(q_csv_name,qmin,qmax):
     q_time.index = np.arange(1, len(q_time) + 1)
     q_time.index = q_time.index.astype(str)
     q_time.index = 'j'+ q_time.index
-    q_time.to_csv(f'{save_folder}\{q_csv_name}.csv', index=True, header=True)
+    q_time.to_csv(f'{q_csv_name}.csv', index=True, header=True)
 
 
 
@@ -152,7 +152,7 @@ def Q_time(q_csv_name,qmin,qmax):
 #기계와 공정의 오류를 생성하는 코드
 @st.cache_data
 def add_unavailable_machines_to_sim(error_csv_name, unavailable_machine_options=None):
-    sim_df = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+    sim_df = pd.read_csv('FJSP_Sim.csv', index_col=0)
 
     job_pro = sim_df
     job_pro_index = job_pro.index
@@ -188,7 +188,7 @@ def add_unavailable_machines_to_sim(error_csv_name, unavailable_machine_options=
                 machine_name = 'M' + str(machine)
                 sim_df.loc[job_key, machine_name] = 0  # 해당 작업의 해당 공정에 해당하는 기계 값을 0으로 변경
 
-    sim_df.to_csv(f'{save_folder}\{error_csv_name}.csv', index=True, header=True)
+    sim_df.to_csv(f'{error_csv_name}.csv', index=True, header=True)
 
 # 데이터프레임을 출력하여 0인 값에 색을 입힙니다.
 @st.cache_data
@@ -213,7 +213,7 @@ def get_csv_files_with_string(save_folder,target_string):
 #error값 범위 지정을 위한 코드
 @st.cache_data
 def sim_list_remind():
-    sim_df = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+    sim_df = pd.read_csv('FJSP_Sim.csv', index_col=0)
 
     job_pro = sim_df
     job_pro_index = job_pro.index
@@ -284,7 +284,7 @@ def filtered_result_create(job_product_list):
     
 @st.cache_data
 def release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_time_list,r_min,r_max):
-    pd_sim = pd.read_csv(f'{save_folder}/FJSP_Sim.csv', index_col=0)
+    pd_sim = pd.read_csv('FJSP_Sim.csv', index_col=0)
     filtered_result=filtered_result
     #r_time만드는 코드
     # 각 작업 번호별 초기 작업 가능한 물량을 저장한 딕셔너리 
@@ -369,4 +369,4 @@ def release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_ti
 
     df_sorted['d_time'] = df_sorted['r_time'] + d_time_list
     df_sorted
-    df_sorted.to_csv(f'{save_folder}\{rd_csv_name}.csv', index=True, header=True)
+    df_sorted.to_csv(f'{rd_csv_name}.csv', index=True, header=True)

@@ -99,11 +99,11 @@ if selecop == 'sim.csv':
     processing_time_file_name = st.text_input("파일 이름을 입력하세요 (확장자 없이):", "FJSP_Sim")
     if st.button('sim.csv생성'):
         sim(processing_time_file_name,number,number2, value5, value6, value7, value8)
-        sim_df = pd.read_csv(f'{save_folder}\{processing_time_file_name}.csv', index_col=False)
+        sim_df = pd.read_csv(f'{processing_time_file_name}.csv', index_col=False)
         st.header(processing_time_file_name + ".csv")
         st.write(sim_df)
         
-        with open(f'{save_folder}\{processing_time_file_name}.csv') as f:
+        with open(f'{processing_time_file_name}.csv') as f:
             st.download_button(f"Download {processing_time_file_name}.csv", f, file_name=f"{processing_time_file_name}.csv", mime='text/csv')
 #job_df_op = sim(number2, value5, value6, value7, value8)
 
@@ -132,11 +132,11 @@ if selecop == 'setup.csv':
     set_time_file_name = st.text_input("파일 이름을 입력하세요 (확장자 없이):", "FJSP_Set")
     if st.button('setup.csv생성'):
         setup(set_time_file_name,value3, value4)
-        setup_df = pd.read_csv(f'{save_folder}\{set_time_file_name}.csv', index_col=False)
+        setup_df = pd.read_csv(f'{set_time_file_name}.csv', index_col=False)
         st.header(set_time_file_name + ".csv")
         st.write(setup_df)
         
-        with open(f'{save_folder}\{set_time_file_name}.csv') as f:
+        with open(f'{set_time_file_name}.csv') as f:
             st.download_button(f"Download {set_time_file_name}.csv", f, file_name=f"{set_time_file_name}.csv", mime='text/csv')
 
 
@@ -168,12 +168,12 @@ if selecop == 'Q-time.csv':
     if st.button('Q-time 생성'):
 
         Q_time(Q_time_file_name,q_range_min, q_range_max)
-        q_time_df = pd.read_csv(f'{save_folder}\{Q_time_file_name}.csv', index_col=False)
+        q_time_df = pd.read_csv(f'{Q_time_file_name}.csv', index_col=False)
         st.header(Q_time_file_name+".csv")
         st.write(q_time_df)
 
         
-        with open(f'{save_folder}\{Q_time_file_name}.csv') as f:
+        with open(f'{Q_time_file_name}.csv') as f:
             st.download_button(f"Download {Q_time_file_name}.csv", f, file_name=f"{Q_time_file_name}.csv", mime='text/csv')
 
     # sim.csv 생성 이후에 Q_time.csv 생성
@@ -246,7 +246,7 @@ if selecop == 'error_create.csv':
         st.write(unavailable_machine_options_pd)
     if selecop_er == 'error_processing_time.csv':
         add_unavailable_machines_to_sim(error_file_name, unavailable_machine_options)
-        error_processing_df = pd.read_csv(f'{save_folder}\{error_file_name}.csv', index_col=False)
+        error_processing_df = pd.read_csv(f'{error_file_name}.csv', index_col=False)
         
         st.header(error_file_name+".csv")
         error_processing_styled_df = error_processing_df.style.applymap(highlight_zero)
@@ -254,7 +254,7 @@ if selecop == 'error_create.csv':
         st.write(error_processing_df.shape)
 
         
-        with open(f'{save_folder}\{error_file_name}.csv') as f:
+        with open(f'{error_file_name}.csv') as f:
             st.download_button(f"Download {error_file_name}.csv", f, file_name=f"{error_file_name}.csv", mime='text/csv')
         # with open('error_processing.csv') as f:
         #     st.download_button('Download CSV', f, file_name='error_prcessing.csv', mime='text/csv')
@@ -366,13 +366,13 @@ if selecop == 'rd_time.csv':
     if st.button('rd_time 생성'):
 
         rd_df = release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_time_list,r_min,r_max)
-        rd_time_df = pd.read_csv(f'{save_folder}\{rd_csv_name}.csv', index_col=0)
+        rd_time_df = pd.read_csv(f'{rd_csv_name}.csv', index_col=0)
         st.header(rd_csv_name+".csv")
         st.write(rd_time_df)
         st.write(rd_time_df.shape)
 
         
-        with open(f'{save_folder}\{rd_csv_name}.csv') as f:
+        with open(f'{rd_csv_name}.csv') as f:
             st.download_button(f"Download {rd_csv_name}.csv", f, file_name=f"{rd_csv_name}.csv", mime='text/csv')
         
     
