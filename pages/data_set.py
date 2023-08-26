@@ -79,7 +79,7 @@ if selecop == 'sim.csv':
     2. 기계의 갯수를 설정
     3. 생성될 processing time의 난수 범위 설정
     4. 각 작업당 공정(job_operation)을 생성할 난수 범위 설정
-    5. 2. 원하는 csv이름을 지정후 생성 및 다운
+    5. 원하는 csv이름을 지정후 생성 및 다운
     ''')
     st.markdown("---")
 
@@ -104,7 +104,7 @@ if selecop == 'sim.csv':
         st.header(processing_time_file_name + ".csv")
         st.write(sim_df)
         
-        with open(f'{save_folder}\{processing_time_file_name}.csv') as f:
+        with open(f'{save_folder}\FJSP_Sim.csv') as f:
             st.download_button(f"Download {processing_time_file_name}.csv", f, file_name=f"{processing_time_file_name}.csv", mime='text/csv')
 #job_df_op = sim(number2, value5, value6, value7, value8)
 
@@ -279,7 +279,7 @@ if selecop == 'rd_time.csv':
     ''')
     st.markdown("---")
     filtered_result=None
-    st.subheader('초기물량 설정') 
+    st.subheader('Release_time,due_time 생성') 
       
 
     # sim_target_string1 = "FJSP_Si"
@@ -298,6 +298,7 @@ if selecop == 'rd_time.csv':
     #st.write(sorted_counter)
    
     st.markdown("---")
+    st.write('총 생산량 설정')
     for row_idx in range(num_rows):
         row_start = row_idx * num_per_row
         row_end = min(row_start + num_per_row, len(num_inputs1))
@@ -331,6 +332,7 @@ if selecop == 'rd_time.csv':
     num_rows1 = (len(num_inputs) + num_per_row1 - 1) // num_per_row1
 
     st.markdown("---")
+    st.write('초기 생산량 설정')
     for row_idx in range(num_rows1):
         row_start = row_idx * num_per_row1
         row_end = min(row_start + num_per_row1, len(num_inputs))
@@ -347,7 +349,8 @@ if selecop == 'rd_time.csv':
                     arrival_number = int(arrival_number)
             first_release_supply.append(arrival_number)
 
-    st.markdown("---")                
+    st.markdown("---")
+    st.write('작업당 평균 작업시간 설정')                
     for row_idx in range(num_rows1):
         row_start = row_idx * num_per_row1
         row_end = min(row_start + num_per_row1, len(num_inputs))

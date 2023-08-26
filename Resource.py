@@ -5,14 +5,11 @@ Created on Wed Jan 11 16:15:22 2023
 @author: parkh
 """
 
-import streamlit as st
-
-@st.cache_data
 class Resource(object):
     # Default Constructor
     def __init__(self, resource_id):
         self.id = resource_id #기계 아이디
-        self.status = 0 #기계 작동유무
+        self.status = 0 #기계 작동유무 , 0은 쉬는 중, 1은 작동중
         self.setup_status = 0 #기계 셋업 상태
         self.last_work_finish_time = 0 #최근에 끝난 작업시간
         self.job_id_processed = 0 #작업되고 있는 job ID
@@ -28,11 +25,12 @@ class Resource(object):
         self.setup_status = job.job_type
         self.job_id_processed = job.job_type
         self.reservation_time = reservation_time
+        
     def complete_setting(self,start_time, end_time, event_type):
         self.status = 0
         self.job_id_processed = 0
         if self.last_work_finish_time != start_time:
-            self.idle_time += start_time - self.last_work_finish_time
+            self.idle_time += start_time - self.last_work_finish_time #setup이거나 idel이거나
         if event_type == "track_in_finish":
             self.value_added_time += end_time-start_time
         elif event_type == "setup_change":
