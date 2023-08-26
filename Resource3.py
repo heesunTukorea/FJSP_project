@@ -5,6 +5,9 @@ Created on Wed Jan 11 16:15:22 2023
 @author: parkh
 """
 
+import streamlit as st
+
+@st.cache_data
 class Resource(object):
     # Default Constructor
     def __init__(self, resource_id):
