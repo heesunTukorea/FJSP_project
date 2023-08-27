@@ -1,12 +1,18 @@
 
+
+
 matplotlib==3.6.2
-matplotlib-inline==0.1.6
+
 
 numpy==1.24.1
 
 pandas==1.5.2
-pandas-datareader==0.9.0
+
+
+plotly==5.15.0
+plotly-express==0.4.1
+
+
 
 streamlit==1.24.0
-streamlit-drawable-canvas==0.5.1
-streamlit-quill==0.0.3
+
