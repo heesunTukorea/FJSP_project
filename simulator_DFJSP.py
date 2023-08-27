@@ -469,7 +469,7 @@ class FJSP_simulator(object):
                 self.process_event()
                 
         
-        Flow_time, machine_util, util, makespan, tardiness, lateness, t_max,q_time_true,q_time_false,q_job_t, q_job_f = self.performance_measure()
+        Flow_time, machine_util, util, makespan, tardiness, lateness, t_max,q_time_true,q_time_false,q_job_t, q_job_f, q_time = self.performance_measure()
         print(self.k)
         print("FlowTime:" , Flow_time)
         print("machine_util:" , machine_util)
@@ -482,6 +482,7 @@ class FJSP_simulator(object):
         print("Q time False", q_time_false)
         print("Q job True", q_job_t)
         print("Q job False", q_job_f)
+        print("Q total over time", q_time)
         #self.gannt_chart()
         return Flow_time, util, makespan
     #event = (job_type, operation, machine_type, start_time, end_time, event_type)
@@ -813,19 +814,18 @@ class FJSP_simulator(object):
 
 
 
-"""
-makespan_table = []
-util = []
-ft_table = []
 
-for i in range(2,3):
-    main = FJSP_simulator('C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_test.csv','C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_setup_test.csv',
-                          "C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_Qdata_test.csv","C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_rdData_test2.csv",i)
-    FT, util2, ms = main.run()
-    makespan_table.append(ms)
-    util.append(util2)
-    ft_table.append(FT)
-print(makespan_table)
-print(ft_table)
-print(util)
-"""
+# makespan_table = []
+# util = []
+# ft_table = []
+
+# for i in range(2,3):
+#     main = FJSP_simulator('C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_test.csv','C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_setup_test.csv',
+#                           "C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_Qdata_test.csv","C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_rdData_test2.csv",i)
+#     FT, util2, ms = main.run()
+#     makespan_table.append(ms)
+#     util.append(util2)
+#     ft_table.append(FT)
+# print(makespan_table)
+# print(ft_table)
+# print(util)

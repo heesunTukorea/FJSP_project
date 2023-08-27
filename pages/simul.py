@@ -1,14 +1,31 @@
 import streamlit as st
 from simulator_DFJSP import *
-from fjsp_Q import get_csv_file_list,get_csv_files_with_string
+from fjsp_Q import get_csv_file_list,get_csv_files_with_string,highlight_max
 import os
 import pandas as pd
+from io import BytesIO
+import time
+# import seaborn as sns
+# import matplotlib.pyplot as plt
 
 col1, col2 = st.columns([7,1])
 
 with col2:
     st.image("tuk_img.png")
 st.title("시뮬레이터")
+
+
+x1 = st.expander('사용법')
+x1.write('''
+- 디스패칭룰을 선택해 시뮬레이터를 돌려보는 페이지
+- processing_time,setup_time,Q_time,rd_time파일 업로드 필요
+                    
+1. sim,setup_time,Q_time,rd_time 순서에 맞게 파일을 업로드해야함 클릭또는 드래그
+2. 초록색표시로 확인메시지 확인후 데이터프레임 확인
+3. 적용할 디스패칭룰 선택후 버튼을 클릭
+
+''')
+st.markdown("---")
 
 
 
@@ -24,23 +41,36 @@ uploaded_files = st.file_uploader("CSV 파일을 선택하세요.", accept_multi
 # 업로드한 파일들을 저장할 딕셔너리
 uploaded_files_dict = {}
 
-# 업로드한 파일을 딕셔너리에 추가
+# 업로드한 파일을 딕셔너리에 추가하고 저장
+
 for uploaded_file in uploaded_files:
     bytes_data = uploaded_file.read()
+    
     try:
-        uploaded_file_df = uploaded_file.read()
-        # 빈 파일인 경우 데이터프레임이 생성되지 않습니다.
+        # 파일 읽기 전에 데이터를 변수에 저장
+        data = bytes_data
+        uploaded_file_df = pd.read_csv(BytesIO(data))  # 저장한 데이터를 이용해 데이터프레임 생성
+        # 빈 파일이 아닌 경우에만 딕셔너리와 파일 저장
         if not uploaded_file_df.empty:
             uploaded_files_dict[uploaded_file.name] = uploaded_file_df
+            # 파일 저장
+            save_folder = 'fjsp_stream'  # 저장할 폴더명
+            if not os.path.exists(save_folder):
+                os.makedirs(save_folder)
+            file_path = os.path.join(save_folder, uploaded_file.name)
+            with open(file_path, "wb") as f:
+                f.write(data)  # 저장할 데이터 사용
+            st.success(f"{uploaded_file.name} 파일이 업로드되었고 저장되었습니다.")
+        else:
+            st.warning(f"{uploaded_file.name} 파일은 비어있어 무시됩니다.")
     except pd.errors.EmptyDataError:
-        # 빈 파일인 경우 오류가 발생하므로, 오류를 처리합니다.
-        st.warning(f"{uploaded_file.name} 파일은 비어있어 데이터프레임을 생성할 수 없습니다.")
-
-# 선택된 탭 이름
+        st.warning(f"{uploaded_file.name} 파일은 비어있어 무시됩니다.")
+    
+uploaded_file_names=list(uploaded_files_dict.keys())
 tabs = st.selectbox("데이터프레임 선택", list(uploaded_files_dict.keys()))
 
 if tabs:
-    with st.beta_expander(f"데이터프레임: {tabs}"):
+    with st.expander(f"데이터프레임: {tabs}"):
         selected_df = uploaded_files_dict[tabs]
         st.write(selected_df)
 
@@ -82,22 +112,77 @@ with col9:
     cr = st.checkbox('CR')
     if cr:
         rule_select_list.append(9)
+#st.write(uploaded_file_names[0])
+
 
 if st.button('클릭'):
+    progress_text = "Operation in progress. Please wait."
+    my_bar = st.progress(0, text=progress_text)
+
+    total_iterations = len(rule_select_list)
+    
+    sim_file_name = f"{save_folder}/{uploaded_file_names[0]}"
+    setup_file_name = f"{save_folder}/{uploaded_file_names[1]}"
+    q_time_file_name = f"{save_folder}/{uploaded_file_names[2]}"
+    rddata_file_name = f"{save_folder}/{uploaded_file_names[3]}"
+
     makespan_table = []
     util = []
     ft_table = []
+    columns_name =[]
 
-    for i in rule_select_list:
-        main = FJSP_simulator('C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_test.csv','C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_setup_test.csv',
-                            "C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_Qdata_test.csv","C:/Users/parkh/git_tlsgudcks/simulator/data/DFJSP_rdData_test2.csv",i)
+    for index, i in enumerate(rule_select_list):
+        main = FJSP_simulator(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name, i)
         FT, util2, ms = main.run()
+        
         makespan_table.append(ms)
         util.append(util2)
         ft_table.append(FT)
-    print(makespan_table)
-    print(ft_table)
-    print(util)
+        
+        # Update progress bar
+        current_progress = int((index + 1) / total_iterations * 100)
+        my_bar.progress(current_progress, text=progress_text)
+        if i == 0:
+            s_rule_name = 'SPT'
+        if i == 1:
+            s_rule_name = 'SSU'
+        if i == 2:
+            s_rule_name = 'SPTSSU'
+        if i == 3:
+            s_rule_name = 'MOR'
+        if i == 4:
+            s_rule_name = 'LOR'
+        if i == 5:
+            s_rule_name = 'EDD'
+        if i == 6:
+            s_rule_name = 'MST'
+        if i == 7:
+            s_rule_name = 'FIFO'
+        if i == 8:
+            s_rule_name = 'LIFO'
+        if i == 9:
+            s_rule_name = 'CR'
+        columns_name.append(s_rule_name)
+    st.write(makespan_table)
+    st.write(util)
+    st.write(ft_table)
+    re_index = ['makespan','util','FT']
+    re_data = [makespan_table ,util,ft_table ]
+    rule_result_df = pd.DataFrame(data = re_data, columns =columns_name, index = re_index)
+    st.write(rule_result_df)
+    styled_df = rule_result_df.style.apply(highlight_max, axis=1)
+    with st.expander("color"):
+        st.write(styled_df)
+
+    # for col_name in rule_result_df.index:
+    #     plt.figure(figsize=(8, 6))
+    #     sns.histplot(rule_result_df.loc[col_name], bins=10, kde=True,orient='vertical')
+    #     plt.title(f'Histogram of {col_name}')
+    #     plt.xlabel('Value')
+    #     plt.ylabel('Frequency')
+    #     st.pyplot(plt)
+ 
+    
 # '''
 # learning_rate = 0.0005  
 # gamma = 0.99
