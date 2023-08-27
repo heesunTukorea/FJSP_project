@@ -376,5 +376,7 @@ def release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_ti
     # d_time을 r-time에 더해줌으로써 새로운 r-time 계산
 
     df_sorted['d_time'] = df_sorted['r_time'] + d_time_list
-    df_sorted
+    df_sorted.index = df_sorted.index.astype(str)
+    df_sorted.index = 'j'+ df_sorted.index 
+    
     df_sorted.to_csv(f'{rd_csv_name}.csv', index=True, header=True)
