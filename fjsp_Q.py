@@ -194,12 +194,12 @@ def highlight_zero(val):
     return 'background-color: yellow' if val == 0 else ''
 
 def highlight_max(s):
-    if s.name in ['makespan', 'FT']:
+    if s.name in ['makespan', 'Flow_time','tardiness','lateness','t_max','q_time_false','q_job_false','q_total_over_time']:
         is_max = s == s.min()  # 행에서 최솟값과 일치하는지 여부
-    elif s.name == 'util':
+    elif s.name in ['util','q_time_true','q_job_true']:
         is_max = s == s.max()  # 행에서 최댓값과 일치하는지 여부
-    # else:
-    #     is_max = pd.Series(False, index=s.index)  # 다른 열은 스타일을 적용하지 않음
+    else:
+        is_max = pd.Series(False, index=s.index)  # 다른 열은 스타일을 적용하지 않음
     return ['background-color: yellow' if v else '' for v in is_max]
 
 

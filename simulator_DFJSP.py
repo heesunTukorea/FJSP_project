@@ -484,7 +484,7 @@ class FJSP_simulator(object):
         print("Q job False", q_job_f)
         print("Q total over time", q_time)
         #self.gannt_chart()
-        return Flow_time, util, makespan
+        return Flow_time, machine_util, util, makespan, tardiness, lateness, t_max,q_time_true,q_time_false,q_job_t, q_job_f, q_time
     #event = (job_type, operation, machine_type, start_time, end_time, event_type)
     def dispatching_rule_decision(self,machine, a):
         #print(machine)

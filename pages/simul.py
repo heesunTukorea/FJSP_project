@@ -127,19 +127,38 @@ if st.button('클릭'):
     setup_file_name = f"{save_folder}/{uploaded_file_names[1]}"
     q_time_file_name = f"{save_folder}/{uploaded_file_names[2]}"
     rddata_file_name = f"{save_folder}/{uploaded_file_names[3]}"
+    
 
     makespan_table = []
+    machine_util_list=[]
+    tardiness_list=[]
+    lateness_list=[]
     util = []
+    t_max_list=[]
+    q_time_true_list=[]
+    q_time_false_list=[]
+    q_job_t_list=[]
+    q_job_f_list=[]
+    q_time_list=[]
     ft_table = []
     columns_name =[]
 
     for index, i in enumerate(rule_select_list):
         main = FJSP_simulator(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name, i)
-        FT, util2, ms = main.run()
-        
+        FT,machine_util, util2, ms, tardiness, lateness, t_max,q_time_true,q_time_false,q_job_t, q_job_f, q_time = main.run()
         makespan_table.append(ms)
         util.append(util2)
         ft_table.append(FT)
+        machine_util_list.append(machine_util)
+        tardiness_list.append(tardiness)
+        lateness_list.append(lateness)
+        t_max_list.append(t_max)
+        q_time_true_list.append(q_time_true)
+        q_time_false_list.append(q_time_false)
+        q_job_t_list.append(q_job_t)
+        q_job_f_list.append(q_job_f)
+        q_time_list.append(q_time)
+
         
         # Update progress bar
         current_progress = int((index + 1) / total_iterations * 100)
@@ -168,8 +187,8 @@ if st.button('클릭'):
     st.write(makespan_table)
     st.write(util)
     st.write(ft_table)
-    re_index = ['makespan','util','FT']
-    re_data = [makespan_table ,util,ft_table ]
+    re_index = ['makespan','util','machine_util','Flow_time','tardiness', 'lateness', 't_max','q_time_true','q_time_false','q_job_true', 'q_job_false', 'q_total_over_time']
+    re_data = [makespan_table ,util,machine_util_list,ft_table,tardiness_list, lateness_list, t_max_list,q_time_true_list,q_time_false_list,q_job_t_list, q_job_f_list, q_time_list]
     rule_result_df = pd.DataFrame(data = re_data, columns =columns_name, index = re_index)
     st.write(rule_result_df)
     styled_df = rule_result_df.style.apply(highlight_max, axis=1)
