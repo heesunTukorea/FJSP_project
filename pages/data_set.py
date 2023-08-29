@@ -364,7 +364,7 @@ if selecop == 'rd_time.csv':
             if data_idx <= len(num_inputs):
                 with col:
                     # 평균 작업 시간 입력 받기
-                    arrival_time = st.number_input(f'{data_idx}평균 작업 시간', key=f'arrival_time_{data_idx}', min_value=0, max_value=100, step=1,value=50)
+                    arrival_time = st.number_input(f'{data_idx}평균 작업 시간', key=f'arrival_time_{data_idx}', min_value=0, max_value=1000, step=1,value=50)
                     arrival_time = int(arrival_time)
             arrival_time_list.append(arrival_time)
     st.markdown("---")
