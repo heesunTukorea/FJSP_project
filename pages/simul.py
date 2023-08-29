@@ -116,7 +116,7 @@ with col9:
         rule_select_list.append(9)
 #st.write(uploaded_file_names[0])
 
-
+simul_file_name = st.text_input("파일 이름을 입력하세요 (확장자 없이):", "FJSP_simul")
 if st.button('클릭'):
     progress_text = "Operation in progress. Please wait."
     my_bar = st.progress(0, text=progress_text)
@@ -145,6 +145,7 @@ if st.button('클릭'):
 
     for index, i in enumerate(rule_select_list):
         main = FJSP_simulator(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name, i)
+        #fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8 = main.gannt_chart()
         FT,machine_util, util2, ms, tardiness, lateness, t_max,q_time_true,q_time_false,q_job_t, q_job_f, q_time = main.run()
         makespan_table.append(ms)
         util.append(util2)
@@ -184,6 +185,14 @@ if st.button('클릭'):
         if i == 9:
             s_rule_name = 'CR'
         columns_name.append(s_rule_name)
+        # st.plotly_chart(fig)
+        # st.plotly_chart(fig2)
+        # st.plotly_chart(fig3)
+        # st.plotly_chart(fig4)
+        # st.plotly_chart(fig5)
+        # st.plotly_chart(fig6)
+        # st.plotly_chart(fig7)
+        # st.plotly_chart(fig8)
     st.write(makespan_table)
     st.write(util)
     st.write(ft_table)
@@ -192,9 +201,13 @@ if st.button('클릭'):
     rule_result_df = pd.DataFrame(data = re_data, columns =columns_name, index = re_index)
     st.write(rule_result_df)
     styled_df = rule_result_df.style.apply(highlight_max, axis=1)
+    
+    rule_result_df.to_csv(f'{simul_file_name}.csv', index=True, header=True)
+    with open(f'{simul_file_name}.csv') as f:
+        st.download_button(f"Download {simul_file_name}.csv", f, file_name=f"{simul_file_name}.csv", mime='text/csv')
     with st.expander("color"):
         st.write(styled_df)
-
+    
     # for col_name in rule_result_df.index:
     #     plt.figure(figsize=(8, 6))
     #     sns.histplot(rule_result_df.loc[col_name], bins=10, kde=True,orient='vertical')

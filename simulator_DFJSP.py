@@ -333,6 +333,7 @@ class FJSP_simulator(object):
         #fig8.show()
         plot(fig8)
         print(df)
+        return fig, fig2,fig3,fig4,fig5,fig6,fig7,fig8
     #오퍼레이션 길이 50,메이크스팬 100, Max op 5,Min op 5, Max-min
     #39025431
     
