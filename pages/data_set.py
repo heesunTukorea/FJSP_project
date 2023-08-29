@@ -167,7 +167,7 @@ if selecop == 'Q-time.csv':
     # st.write(f"선택된 CSV 파일: {selected_sim_csv}")
 
     # Q_time 생성 입력값 
-    q_range_min, q_range_max = st.slider('Q-time에 적용될 배수 범위', 0.0, 5.0, (1.5, 2.0),step = 0.1)
+    q_range_min, q_range_max = st.slider('Q-time에 적용될 배수 범위', 0.0, 5.0, (0.2, 0.4),step = 0.1)
     st.write('선택범위', q_range_min, q_range_max)
     Q_time_file_name = st.text_input("파일 이름을 입력하세요 (확장자 없이):", "FJSP_Q_time")
     if st.button('Q-time 생성'):

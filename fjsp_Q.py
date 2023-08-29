@@ -128,10 +128,11 @@ def Q_time(q_csv_name,qmin,qmax):
     #Q_time을 기계들의 processing time의 최댓값에서 범위를 지정해서 곱함
     #공정이 없는것은 0으로 처리
     columns = job_df_op_max_1
-
+    job_df_op_value_new =[]
     q_time = pd.DataFrame(index=range(j_op_num), columns=job_df_op_max_1)  # 빈 데이터프레임 생성
-
-    for i, val in enumerate(job_df_op_values):
+    for value in job_df_op_values:
+        job_df_op_value_new.append(value - 1)
+    for i, val in enumerate(job_df_op_value_new):
         for j in range(job_df_op_max):
             if j < val:
                 q_time.iloc[i, j] = int(np.random.uniform(qmin,qmax) * job_pro.iloc[i].max())
