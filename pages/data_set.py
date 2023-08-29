@@ -313,7 +313,7 @@ if selecop == 'rd_time.csv':
             if data_idx <= len(num_inputs1):
                 with col:
                     # 도착물량 입력 받기
-                    job_product = st.number_input(f'{data_idx}작업 총 물량', key=f'job_product{data_idx}', min_value=1, max_value=100, step=1)
+                    job_product = st.number_input(f'{data_idx}작업 총 물량', key=f'job_product{data_idx}', min_value=1, max_value=1000, step=1)
                     job_product = int(job_product)
             job_product_list.append(job_product)
 

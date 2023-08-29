@@ -280,7 +280,7 @@ class FJSP_simulator(object):
         
         fig = px.bar(df, x="Resource", y="Type", color="Type", facet_row="Type")
         fig.update_yaxes(matches=None)
-        fig.show()
+        #fig.show()
         
         
         
@@ -311,7 +311,7 @@ class FJSP_simulator(object):
         #fig4.show()
         
         fig5 = px.timeline(df, x_start="Start", x_end="Finish", y="Rule", template="simple_white",color="Rule", color_discrete_sequence=px.colors.qualitative.Dark24 ,text = "Step-Rule", width=2000, height=800)
-        fig5.show()
+        #fig5.show()
         
         fig6 = px.timeline(df, x_start="Start", x_end="Finish", y="Resource", template="simple_white",color="Type", color_discrete_sequence=px.colors.qualitative.Dark24 ,text = "ID_OP", width=2000, height=800)
         [(self.modify_width(bar, 0.7), self.modify_text(bar))
@@ -322,7 +322,7 @@ class FJSP_simulator(object):
         fig7 = px.timeline(df, x_start="Start", x_end="Finish", y="JOB_ID", template="simple_white",color="Q_check", color_discrete_sequence=px.colors.qualitative.Dark24 ,text = "Q_diff", width=2000, height=2000)
         [(self.modify_width(bar, 0.7), self.modify_text(bar))
         for bar in fig6.data if ('setup' in bar.legendgroup)]
-        fig7.show()
+        #fig7.show()
         df = self.plotlydf_arrival_and_due.append(self.plotlydf, ignore_index=True)
         df = df.sort_values(by=['Start',"Finish"], ascending=[False, False])
         df = self.to_top_arrival_df(df)

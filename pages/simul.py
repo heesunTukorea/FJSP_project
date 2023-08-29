@@ -192,7 +192,8 @@ if st.button('클릭'):
         # st.plotly_chart(fig5)
         # st.plotly_chart(fig6)
         # st.plotly_chart(fig7)
-        # st.plotly_chart(fig8)
+        # fig8_png = st.plotly_chart(fig8)
+        # fig8_png.write_image("fig8.png")
     st.write(makespan_table)
     st.write(util)
     st.write(ft_table)
@@ -207,7 +208,8 @@ if st.button('클릭'):
         st.download_button(f"Download {simul_file_name}.csv", f, file_name=f"{simul_file_name}.csv", mime='text/csv')
     with st.expander("color"):
         st.write(styled_df)
-    
+    # with st.expander("graph"):
+    #     st.image("fig8_png.png")
     # for col_name in rule_result_df.index:
     #     plt.figure(figsize=(8, 6))
     #     sns.histplot(rule_result_df.loc[col_name], bins=10, kde=True,orient='vertical')
