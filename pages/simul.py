@@ -69,12 +69,20 @@ for uploaded_file in uploaded_files:
         st.warning(f"{uploaded_file.name} 파일은 비어있어 무시됩니다.")
     
 uploaded_file_names=list(uploaded_files_dict.keys())
-tabs = st.selectbox("데이터프레임 선택", list(uploaded_files_dict.keys()))
+#tabs = st.selectbox("데이터프레임 선택", list(uploaded_files_dict.keys()))
 
-if tabs:
-    with st.expander(f"데이터프레임: {tabs}"):
-        selected_df = uploaded_files_dict[tabs]
-        st.write(selected_df)
+
+with st.expander("데이터프레임"):
+    tab_1,tab_2,tab_3,tab4 = st.tabs(uploaded_file_names)
+    t_list = [tab_1,tab_2,tab_3,tab4]
+    for i in range(len(t_list)):
+        t_list[i-1].subheader(uploaded_file_names[i-1])
+        selected_df = uploaded_files_dict[uploaded_file_names[i-1]]
+        t_list[i-1].write(selected_df)
+# if tabs:
+#     with st.expander(f"데이터프레임: {tabs}"):
+#         selected_df = uploaded_files_dict[tabs]
+#         st.write(selected_df)
 
 
 rule_select_list=[]    
@@ -142,11 +150,21 @@ if st.button('클릭'):
     q_time_list=[]
     ft_table = []
     columns_name =[]
+    fig_list = []
+    # fig2_dict = {}
+    # fig3_dict = {}
+    # fig4_dict = {}
+    # fig5_dict = {}
+    # fig6_dict = {}
+    # fig7_dict = {}
+    # fig8_dict = {}
 
     for index, i in enumerate(rule_select_list):
         main = FJSP_simulator(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name, i)
-        #fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8 = main.gannt_chart()
+        
+        
         FT,machine_util, util2, ms, tardiness, lateness, t_max,q_time_true,q_time_false,q_job_t, q_job_f, q_time = main.run()
+        fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8 = main.gannt_chart()
         makespan_table.append(ms)
         util.append(util2)
         ft_table.append(FT)
@@ -159,7 +177,14 @@ if st.button('클릭'):
         q_job_t_list.append(q_job_t)
         q_job_f_list.append(q_job_f)
         q_time_list.append(q_time)
-
+        fig_list.append([fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8]) 
+        # fig2_dict[i] = fig2 
+        # fig3_dict[i] = fig3 
+        # fig4_dict[i] = fig4 
+        # fig5_dict[i] = fig5 
+        # fig6_dict[i] = fig6 
+        # fig7_dict[i] = fig7 
+        # fig8_dict[i] = fig8 
         
         # Update progress bar
         current_progress = int((index + 1) / total_iterations * 100)
@@ -192,11 +217,12 @@ if st.button('클릭'):
         # st.plotly_chart(fig5)
         # st.plotly_chart(fig6)
         # st.plotly_chart(fig7)
+        #st.plotly_chart(fig8)
         # fig8_png = st.plotly_chart(fig8)
         # fig8_png.write_image("fig8.png")
-    st.write(makespan_table)
-    st.write(util)
-    st.write(ft_table)
+    # st.write(makespan_table)
+    # st.write(util)
+    # st.write(ft_table)
     re_index = ['makespan','util','machine_util','Flow_time','tardiness', 'lateness', 't_max','q_time_true','q_time_false','q_job_true', 'q_job_false', 'q_total_over_time']
     re_data = [makespan_table ,util,machine_util_list,ft_table,tardiness_list, lateness_list, t_max_list,q_time_true_list,q_time_false_list,q_job_t_list, q_job_f_list, q_time_list]
     rule_result_df = pd.DataFrame(data = re_data, columns =columns_name, index = re_index)
@@ -208,6 +234,53 @@ if st.button('클릭'):
         st.download_button(f"Download {simul_file_name}.csv", f, file_name=f"{simul_file_name}.csv", mime='text/csv')
     with st.expander("color"):
         st.write(styled_df)
+    
+    tab_list =['fig','fig2','fig3','fig4','fig5','fig6','fig7','fig8']
+    #aa = st.selectbox("rule_select",(columns_name))
+    for index,i in enumerate(columns_name):
+        with st.expander(f"{i}"):
+            tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8 =st.tabs(tab_list)
+            tab_l = [tab1,tab2,tab3,tab4,tab5,tab6,tab7,tab8]
+            for j in range(len(tab_l)+1):
+                if j == 1:
+                    tab1.subheader("fig")
+                    tab1.plotly_chart(fig_list[index][j-1])
+                else:
+                    tab_l[j-1].subheader(f"fig{j}")
+                    tab_l[j-1].plotly_chart(fig_list[index][j-1])
+             
+        
+            # with st.expander("fig"):
+            #     st.plotly_chart(fig)
+
+            # with st.expander("fig2"):
+            #     st.plotly_chart(fig2)
+
+            # with st.expander("fig3"):
+            #     st.plotly_chart(fig3)
+
+            # with st.expander("fig4"):
+            #     st.plotly_chart(fig4)
+
+            # with st.expander("fig5"):
+            #     st.plotly_chart(fig5)
+
+            # with st.expander("fig6"):
+            #     st.plotly_chart(fig6)
+
+            # with st.expander("fig7"):
+            #     st.plotly_chart(fig7)
+
+            # with st.expander("fig8"):
+            #     st.plotly_chart(fig8)
+    # for i in range(0,len(columns_name)):
+    #     with st.expander(f"{columns_name[i]}_graph"):
+    #         st.plotly_chart(fig_dict[i])
+    
+    
+    
+    
+    
     # with st.expander("graph"):
     #     st.image("fig8_png.png")
     # for col_name in rule_result_df.index:
