@@ -71,14 +71,14 @@ for uploaded_file in uploaded_files:
 uploaded_file_names=list(uploaded_files_dict.keys())
 #tabs = st.selectbox("데이터프레임 선택", list(uploaded_files_dict.keys()))
 
-
-with st.expander("데이터프레임"):
-    tab_1,tab_2,tab_3,tab4 = st.tabs(uploaded_file_names)
-    t_list = [tab_1,tab_2,tab_3,tab4]
-    for i in range(len(t_list)):
-        t_list[i-1].subheader(uploaded_file_names[i-1])
-        selected_df = uploaded_files_dict[uploaded_file_names[i-1]]
-        t_list[i-1].write(selected_df)
+if len(uploaded_file_names) >= 4:
+    with st.expander("데이터프레임"):
+        tab_1,tab_2,tab_3,tab4 = st.tabs(uploaded_file_names)
+        t_list = [tab_1,tab_2,tab_3,tab4]
+        for i in range(len(t_list)):
+            t_list[i-1].subheader(uploaded_file_names[i-1])
+            selected_df = uploaded_files_dict[uploaded_file_names[i-1]]
+            t_list[i-1].write(selected_df)
 # if tabs:
 #     with st.expander(f"데이터프레임: {tabs}"):
 #         selected_df = uploaded_files_dict[tabs]
