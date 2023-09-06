@@ -9,7 +9,7 @@ st.set_page_config(
 col1, col2 = st.columns([8,2])
 
 with col1:
-    st.title("FJSP_DEMO")
+    st.title("Q-time 제약이 있는 스케줄링 문제 생성 및 시뮬레이터")
 
 with col2:
     st.image("tuk_img.png")
