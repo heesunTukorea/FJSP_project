@@ -91,9 +91,9 @@ def main_d(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i)
     progress_text = "Operation in progress. Please wait."
     my_bar = st.progress(0, text=progress_text)
 
-    total_iterations = 10
+    total_iterations = 1000
     with st.expander("train"):
-        for n_epi in range(10):
+        for n_epi in range(1000):
             #여기는 sample_action 구간
             current_progress = int((n_epi + 1) / total_iterations * 100)
             my_bar.progress(current_progress, text=progress_text)
@@ -113,7 +113,7 @@ def main_d(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i)
                     break
                 
             #학습구간    
-            if memory.size() > 10:
+            if memory.size() > 1000:
                 train(q, q_target, memory, optimizer)
             
             #결과 및 파라미터 저장    
