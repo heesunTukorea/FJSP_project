@@ -22,7 +22,8 @@ class Resource(object):
 
     def assign_setting(self, job, reservation_time):
         self.status = 1
-        self.setup_status = job.job_type
+        if job.job_type != "j0":            
+            self.setup_status = job.job_type
         self.job_id_processed = job.job_type
         self.reservation_time = reservation_time
         
@@ -35,8 +36,8 @@ class Resource(object):
             self.value_added_time += end_time-start_time
         elif event_type == "setup_change":
             self.idle_time += end_time-start_time
-        elif event_type == "delay_machine":
-            self.idle_time += end_time-start_time    
+        elif event_type == "NOTHING":
+            self.idle_time += end_time-start_time
         self.last_work_finish_time = end_time
             
     def util(self):

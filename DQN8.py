@@ -11,14 +11,14 @@ import random
 from simulator_DFJSP import *
 import streamlit as st
 
-learning_rate = 0.0001  
+learning_rate = 0.0004
 gamma = 0.99
 buffer_limit = 50000
 batch_size = 32
 
 class ReplayBuffer():        #buffer class
     def __init__(self):
-        self.buffer = collections.deque(maxlen=buffer_limit);
+        self.buffer = collections.deque(maxlen=buffer_limit)
     def put(self, transition):
         self.buffer.append(transition)
     def sample(self, n):
@@ -43,7 +43,7 @@ class Qnet(nn.Module):        #Qnet
         super(Qnet, self).__init__()
         self.fc1 = nn.Linear(12,64)
         self.fc2 = nn.Linear(64,32)
-        self.fc3 = nn.Linear(32,10)
+        self.fc3 = nn.Linear(32,11)
     
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -55,7 +55,7 @@ class Qnet(nn.Module):        #Qnet
         out = self.forward(obs)
         coin = random.random()
         if coin < epsilon:
-            return random.randint(0, 9)
+            return random.randint(0, 10)
         else:
             return out.argmax().item()
         
@@ -76,12 +76,9 @@ def train(q, q_target, memory, optimizer):
         optimizer.zero_grad()
         loss.backward()
         optimizer.step()
-       
+            
 def main_d(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i):
     env = FJSP_simulator(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i)
-    progress_text = "Operation in progress. Please wait."
-    total_iterations = 10
-    my_bar = st.progress(0, text=progress_text)
     q = Qnet()
     q_target = Qnet()
     q_target.load_state_dict(q.state_dict())
@@ -90,14 +87,16 @@ def main_d(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i)
     q_load = 10
     score = 0.0
     optimizer = optim.Adam(q.parameters(), lr=learning_rate)
+    
+    progress_text = "Operation in progress. Please wait."
+    my_bar = st.progress(0, text=progress_text)
+
+    total_iterations = 10
     with st.expander("train"):
         for n_epi in range(10):
-           
-            
-            current_progress = int((n_epi + 1) / total_iterations *100)
-            my_bar.progress(current_progress, text=progress_text)
-            #progress = st.progress((n_epi + 1) / 10.0)
             #여기는 sample_action 구간
+            current_progress = int((n_epi + 1) / total_iterations * 100)
+            my_bar.progress(current_progress, text=progress_text)
             epsilon = max(0.01 , 0.08 - 0.02*(n_epi/200))
             s = env.reset()
             done = False
@@ -125,12 +124,6 @@ def main_d(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i)
                 #print(param_name)
                 torch.save(params, param_name)
                 Flow_time, machine_util, util, makespan, Tardiness_time, Lateness_time, T_max,q_time_true,q_time_false,q_job_t, q_job_f, q_over_time = env.performance_measure()
-                print("--------------------------------------------------")
-                print("flow time: {}, util : {:.3f}, makespan : {}".format(Flow_time, util, makespan))
-                print("Tardiness: {}, Lateness : {}, T_max : {}".format(Tardiness_time, Lateness_time, T_max))
-                print("q_true_op: {}, q_false_op : {}, q_true_job : {}, , q_false_job : {} , q_over_time : {}".format(q_time_true, q_time_false, q_job_t, q_job_f, q_over_time))
-                print("n_episode: {}, score : {:.1f}, n_buffer : {}, eps : {:.1f}%".format(n_epi, score/print_interval,memory.size(),epsilon*100))
-            
                 st.write("--------------------------------------------------")
                 st.write("flow time: {}, util : {:.3f}, makespan : {}".format(Flow_time, util, makespan))
                 st.write("Tardiness: {}, Lateness : {}, T_max : {}".format(Tardiness_time, Lateness_time, T_max))
@@ -138,33 +131,33 @@ def main_d(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i)
                 st.write("n_episode: {}, score : {:.1f}, n_buffer : {}, eps : {:.1f}%".format(n_epi, score/print_interval,memory.size(),epsilon*100))
                 #score=0.0
         
-            #여기는 select_action 구간
-            s = env.reset()
-            done = False
-            score = 0.0
-            params = q.state_dict()
-            torch.save(params, "nomorspt.pt" )
-            while not done:
-                a, a_list = q.select_action(torch.from_numpy(s). float(), epsilon)
-                #print(a_list)
-                #print(a)
-                s_prime, r, done = env.step(a)
-                #print(r)
-                s = s_prime
-                score += r
-                if done:
-                    break
-            Flow_time, machine_util, util, makespan, Tardiness_time, Lateness_time, T_max,q_time_true,q_time_false,q_job_t, q_job_f, q_over_time = env.performance_measure()
-            print("--------------------------------------------------")
-            print("flow time: {}, util : {:.3f}, makespan : {}".format(Flow_time, util, makespan))
-            print("Tardiness: {}, Lateness : {}, T_max : {}".format(Tardiness_time, Lateness_time, T_max))
-            print("q_true_op: {}, q_false_op : {}, q_true_job : {}, , q_false_job : {} , q_over_time : {}".format(q_time_true, q_time_false, q_job_t, q_job_f, q_over_time))
-            print("n_episode: {}, score : {:.1f}, n_buffer : {}, eps : {:.1f}%".format(n_epi, score/print_interval,memory.size(),epsilon*100))
-            
-            
-            
-            if n_epi % q_load ==0 and n_epi!=0:
-                q_target.load_state_dict(q.state_dict())
+        #여기는 select_action 구간
+        s = env.reset()
+        done = False
+        score = 0.0
+        params = q.state_dict()
+        torch.save(params, "nomorspt.pt" )
+        while not done:
+            a, a_list = q.select_action(torch.from_numpy(s). float(), epsilon)
+            #print(a_list)
+            #print(a)
+            s_prime, r, done = env.step(a)
+            #print(r)
+            s = s_prime
+            score += r
+            if done:
+                break
+        Flow_time, machine_util, util, makespan, Tardiness_time, Lateness_time, T_max,q_time_true,q_time_false,q_job_t, q_job_f, q_over_time = env.performance_measure()
+        st.write("--------------------------------------------------")
+        st.write("flow time: {}, util : {:.3f}, makespan : {}".format(Flow_time, util, makespan))
+        st.write("Tardiness: {}, Lateness : {}, T_max : {}".format(Tardiness_time, Lateness_time, T_max))
+        st.write("q_true_op: {}, q_false_op : {}, q_true_job : {}, , q_false_job : {} , q_over_time : {}".format(q_time_true, q_time_false, q_job_t, q_job_f, q_over_time))
+        st.write("n_episode: {}, score : {:.1f}, n_buffer : {}, eps : {:.1f}%".format(n_epi, score/print_interval,memory.size(),epsilon*100))
+        
+        
+        
+        if n_epi % q_load ==0 and n_epi!=0:
+            q_target.load_state_dict(q.state_dict())
     
     
     s = env.reset()
@@ -180,16 +173,16 @@ def main_d(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i)
         score += r
         if done:
             break
-    Flow_time, machine_util, util, makespan, Tardiness_time, Lateness_time, T_max,q_time_true,q_time_false,q_job_t, q_job_f,q_over_time = env.performance_measure()
-    fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8=env.gannt_chart()
-    return fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8,Flow_time, machine_util, util, makespan, Tardiness_time, Lateness_time, T_max,q_time_true,q_time_false,q_job_t, q_job_f, score,q_over_time
+    Flow_time, machine_util, util, makespan, Tardiness_time, Lateness_time, T_max,q_time_true,q_time_false,q_job_t, q_job_f,q_over_time= env.performance_measure()
+    fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8 = env.gannt_chart()
+    return fig,fig2,fig3,fig4,fig5,fig6,fig7,fig8,Flow_time, machine_util, util, makespan, Tardiness_time, Lateness_time, T_max,q_time_true,q_time_false,q_job_t, q_job_f, score, q_over_time
 # for i in range(1):
-    # Flow_time, machine_util, util, makespan, score =main_d()
-    # print("FlowTime:" , Flow_time)
-    # print("machine_util:" , machine_util)
-    # print("util:" , util)
-    # print("makespan:" , makespan)
-    # print("Score" , score)
+#     Flow_time, machine_util, util, makespan, score =main()
+#     print("FlowTime:" , Flow_time)
+#     print("machine_util:" , machine_util)
+#     print("util:" , util)
+#     print("makespan:" , makespan)
+#     print("Score" , score)
     
 """    
 params = torch.load("nomorspt.pt")

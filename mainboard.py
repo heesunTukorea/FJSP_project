@@ -14,7 +14,16 @@ with col1:
 with col2:
     st.image("tuk_img.png")
 
+x2 = st.expander('사용법')
+x2.write('''
+- Queue time(Q-time)은 작업이 어떠한 공정을 거친 후 다음 공정을 수행하기까지의 마감기한으로 반도체 wafer공정 및 OLED공정에 존재하는 제약 조건임
+- 본 연구에서는 Q-time제약이 존재하는 스케줄링 문제를 해결하기 위한 심층강화학습 기반의 알고리즘을 개발하고자 함
+- 각 디스패칭 룰을 적용하거나 DDQN 알고리즘을 이용하여 의사결정 시점에 적절한 작업을 투입해, Q-time제약으로 인한 손실을 줄이고자 함
+- 이 웹은 Streamlit을 통해서 Queue time을 포함한 공정에 대한 문제생성기와 시뮬레이터를 포함
+- 시뮬레이터를 통해 성능평가표와 간트차트를 확인 가능
 
+''')
+st.markdown("---")
 x1 = st.expander('진행상황')
 x1.write('''
 - data set에 들어가서 데이터 생성가능
