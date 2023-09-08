@@ -136,7 +136,7 @@ def main_d(sim_file_name, setup_file_name, q_time_file_name, rddata_file_name,i)
         done = False
         score = 0.0
         params = q.state_dict()
-        torch.save(params, "nomorspt.pt" )
+        #torch.save(params, "nomorspt.pt" )
         while not done:
             a, a_list = q.select_action(torch.from_numpy(s). float(), epsilon)
             #print(a_list)
