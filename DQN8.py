@@ -43,7 +43,7 @@ class Qnet(nn.Module):        #Qnet
         super(Qnet, self).__init__()
         self.fc1 = nn.Linear(12,64)
         self.fc2 = nn.Linear(64,32)
-        self.fc3 = nn.Linear(32,11)
+        self.fc3 = nn.Linear(32,10)
     
     def forward(self, x):
         x = F.relu(self.fc1(x))
@@ -55,7 +55,7 @@ class Qnet(nn.Module):        #Qnet
         out = self.forward(obs)
         coin = random.random()
         if coin < epsilon:
-            return random.randint(0, 10)
+            return random.randint(0, 9)
         else:
             return out.argmax().item()
         
