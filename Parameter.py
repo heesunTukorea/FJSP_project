@@ -25,7 +25,8 @@ class Parameters:
             "batch_size": r_params['batch_size'],
             "buffer_limit": r_params['buffer_limit'],
             "input_layer" : r_params['input_layer'],
-            "output_layer" : r_params['output_layer']
+            "output_layer" : r_params['output_layer'],
+            'episode': r_params['episode']
         }
 
         self.select_DSP_rule ={

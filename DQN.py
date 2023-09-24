@@ -45,9 +45,9 @@ class DQN:
         progress_text = "Operation in progress. Please wait."
         my_bar = st.progress(0, text=progress_text)
 
-        total_iterations = 1000
+        total_iterations = self.r_param['episode']
         with st.expander("train"):
-            for n_epi in range(1000):
+            for n_epi in range(total_iterations):
                 # 여기는 sample_action 구간
                 current_progress = int((n_epi + 1) / total_iterations * 100)
                 my_bar.progress(current_progress, text=progress_text)
@@ -68,7 +68,7 @@ class DQN:
                         break
 
                 # 학습구간
-                if memory.size() > 1000:
+                if memory.size() > total_iterations:
                     self.train(q, q_target, memory, optimizer)
                 self.script_performance(env,n_epi,epsilon,memory, score)
                 # 결과 및 파라미터 저장

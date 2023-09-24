@@ -120,7 +120,8 @@ if len(uploaded_file_names) >= 4:
             "batch_size": 0,
             "buffer_limit": 0,
             "input_layer" : 0,
-            "output_layer" : 0
+            "output_layer" : 0,
+            "episode" :0
         }
         st.write('디스패칭 룰을 선택해주세요')
         rule_select_list=[]    
@@ -318,15 +319,15 @@ if len(uploaded_file_names) >= 4:
                 with st.expander(f"{i}"):
                     tab1,tab2,tab3,tab4,tab5,tab6,tab8 =st.tabs(tab_list)
                     tab_l = [tab1,tab2,tab3,tab4,tab5,tab6,tab8]
-                    for j in range(len(tab_l)+1):
-                        if j == 1:
-                            tab1.subheader("machine_on_job_number")
-                            fig_n = go.Figure(data=fig_list[index][j-1]) 
-                            tab1.plotly_chart(fig_n, use_container_width=True)
-                        else:
-                            tab_l[j-1].subheader(tab_list[j-1])
-                            fig_n = go.Figure(data=fig_list[index][j-1]) 
-                            tab_l[j-1].plotly_chart(fig_n, use_container_width=True)
+                    for j in range(len(tab_l)):
+                        # if j == 1:
+                        #     tab1.subheader("machine_on_job_number")
+                        #     fig_n = go.Figure(data=fig_list[index][j-1]) 
+                        #     tab1.plotly_chart(fig_n, use_container_width=True)
+                        # else:
+                        tab_l[j-1].subheader(tab_list[j-1])
+                        fig_n = go.Figure(data=fig_list[index][j-1]) 
+                        tab_l[j-1].plotly_chart(fig_n, use_container_width=True)
             # fig_n = go.Figure(data=fig_list[0][2]) 
             # st.plotly_chart(fig_n, use_container_width=True) 
     if simul_select == 'DQN':
@@ -335,11 +336,13 @@ if len(uploaded_file_names) >= 4:
         # 디렉토리를 생성하여 그래프 이미지를 저장합니다.
         # output_dir = 'graph_images'
         # os.makedirs(output_dir, exist_ok=True)
-        col1,col2,col3 = st.columns([1,1,1])
         st.write('강화학습 파라미터 조정')
+        col1,col2,col3 = st.columns([1,1,1])
+        
         with col1:
             gamma = st.number_input('gamma',value = 0.99 , min_value=0.00,max_value=100000.00, step=0.1)
             buffer_limit = st.number_input('buffer_limit',value = 50000 , min_value=0, max_value=100000, step=1)
+            episode = st.number_input('episode',value = 1000 , min_value=0, max_value=100000, step=1)
         with col2:
             learning_rate = st.number_input('learning_rate', value=0.0003, min_value=0.0000, max_value=10.0000, step=0.0001, format="%.4f")
             input_layer = st.number_input('input_layer',value = 12 , min_value=0, max_value=100000, step=1)
@@ -385,7 +388,8 @@ if len(uploaded_file_names) >= 4:
                 "batch_size": batch_size,
                 "buffer_limit": buffer_limit,
                 "input_layer" : input_layer,
-                "output_layer" : output_layer
+                "output_layer" : output_layer,
+                "episode" : episode
             }
 
             for i in range(1):
@@ -481,15 +485,15 @@ if len(uploaded_file_names) >= 4:
                 with st.expander("Result"):
                     tab1,tab2,tab3,tab4,tab5,tab6,tab7 =st.tabs(tab_list)
                     tab_l = [tab1,tab2,tab3,tab4,tab5,tab6,tab7]
-                    for j in range(len(tab_l)+1):
-                        if j == 1:
-                            tab1.subheader("m_on_job_number")
-                            fig_d = go.Figure(data=fig_list_d[0][j-1])
-                            tab1.plotly_chart(fig_d,use_container_width=True)
-                        else:
-                            tab_l[j-1].subheader(tab_list[j-1])
-                            fig_d = go.Figure(data=fig_list_d[0][j-1])
-                            tab_l[j-1].plotly_chart(fig_d,use_container_width=True)
+                    for j in range(len(tab_l)):
+                        # if j == 1:
+                        #     tab1.subheader("m_on_job_number")
+                        #     fig_d = go.Figure(data=fig_list_d[0][j-1])
+                        #     tab1.plotly_chart(fig_d,use_container_width=True)
+                        # else:
+                        tab_l[j-1].subheader(tab_list[j-1])
+                        fig_d = go.Figure(data=fig_list_d[0][j-1])
+                        tab_l[j-1].plotly_chart(fig_d,use_container_width=True)
 
                             
             #aa = st.selectbox("rule_select",(columns_name))

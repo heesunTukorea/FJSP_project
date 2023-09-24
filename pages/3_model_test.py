@@ -160,7 +160,8 @@ if len(uploaded_file_names) >= 4:
                 "batch_size": 0,
                 "buffer_limit": 0,
                 "input_layer" : input_layer,
-                "output_layer" : output_layer
+                "output_layer" : output_layer,
+                "episode" : 0
             }
     param = {
             "p_data" : sim_file_name,
@@ -261,12 +262,7 @@ if len(uploaded_file_names) >= 4:
             with st.expander("Result"):
                 tab1,tab2,tab3,tab4,tab5,tab6,tab7 =st.tabs(tab_list)
                 tab_l = [tab1,tab2,tab3,tab4,tab5,tab6,tab7]
-                for j in range(len(tab_l)+1):
-                    if j == 1:
-                        tab1.subheader("m_on_job_number")
-                        fig_d = go.Figure(data=fig_list_d[0][j-1])
-                        tab1.plotly_chart(fig_d,use_container_width=True)
-                    else:
-                        tab_l[j-1].subheader(tab_list[j-1])
-                        fig_d = go.Figure(data=fig_list_d[0][j-1])
-                        tab_l[j-1].plotly_chart(fig_d,use_container_width=True)
+                for j in range(len(tab_l)):
+                    tab_l[j-1].subheader(tab_list[j-1])
+                    fig_d = go.Figure(data=fig_list_d[0][j-1])
+                    tab_l[j-1].plotly_chart(fig_d,use_container_width=True)
