@@ -54,7 +54,7 @@ class Job(object):
         self.operation_in_machine[self.current_operation_id - 1] = machine_number
         self.status = "PROCESSING"
         self.remain_operation -= 1
-        q_time_diff = -1
+        q_time_diff = "None"
         if self.current_operation_id != 1:
             q_time_diff =  max(0, (assign_time - self.start_time) - self.q_time_table[self.current_operation_id - 2])
             self.q_time_check_list[self.current_operation_id - 2] = q_time_diff

@@ -29,7 +29,7 @@ class Event(object):
         self.setup_table = setup_time
         self.q_time_diff = q_time_diff
         
-        if self.q_time_diff ==0:
+        if self.q_time_diff == 0 or self.q_time_diff == "None":
             self.q_time_check = True
             #print("D")
         else:

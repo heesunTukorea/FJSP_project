@@ -381,3 +381,18 @@ def release_due_data(rd_csv_name,filtered_result,first_release_supply,arrival_ti
     df_sorted.index = 'j'+ df_sorted.index 
     
     df_sorted.to_csv(f'{rd_csv_name}.csv', index=True, header=True)
+
+def draw_histogram(df, selected_columns):
+    for column in selected_columns:
+        st.write(f"**{column} Histogram**")
+        fig, ax = plt.subplots(figsize=(8, 6))  # 그림과 축 객체 생성
+        ax.hist(df[column], bins=10, alpha=0.7, color='b')  # 선택한 열 데이터로 히스토그램 그리기
+        ax.set_xlabel(column)
+        ax.set_ylabel('Frequency')
+        return fig # 스트림릿에 그림 표시
+
+
+
+
+
+
