@@ -149,7 +149,7 @@ if len(uploaded_file_names) >= 4:
     
 
     with col1:
-        input_layer = st.number_input('input_layer',value = 12 , min_value=0, max_value=100000, step=1)
+        input_layer = st.number_input('input_layer',value = 36 , min_value=0, max_value=100000, step=1)
     with col2:
         output_layer = st.number_input('output_layer',value = 10 , min_value=0, max_value=100000, step=1)
     
